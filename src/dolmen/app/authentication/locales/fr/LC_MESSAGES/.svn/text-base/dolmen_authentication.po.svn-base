@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dolmen_authentication\n"
+"POT-Creation-Date: 2009-05-06 16:08+0100\n"
+"PO-Revision-Date: 2009-05-05 16:08+0100\n"
+"Last-Translator: Souheil CHELFOUH <souheil@chelfouh.com>\n"
+"Language-Team: Souheil CHELFOUH <souheil@chelfouh.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: fr\n"
+"Language-Name: Français\n"
+"Preferred-Encodings: utf-8\n"
+"Domain: sd\n"
+"X-Is-Fallback-For: fr-be fr-ca fr-lu fr-mc fr-ch fr-fr\n"
+
+msgid  "Log in"
+msgstr "Se connecter"
+
+msgid  "Log out"
+msgstr "Se déconnecter"
+
+msgid  "Username"
+msgstr "Nom d'utilisateur"
+
+msgid  "Enter your username here"
+msgstr "Entrez votre nom d'utilisateur"
+
+msgid  "Full name"
+msgstr "Nom complet"
+
+msgid  "Enter your full name."
+msgstr "Entrez votre nom complet."
+
+msgid  "Password"
+msgstr "Mot de passe"
+
+msgid  "Enter a password"
+msgstr "Entrez un mot de passe"
+
+msgid  "Login form"
+msgstr "Formulaire d'authentification"
+
+msgid  "Login failed"
+msgstr "Authentification échouée"
+
+msgid  "Logged out"
+msgstr "Deconnexion"
+
+msgid  "session_terminated"
+msgstr "Session terminée : vous n'êtes plus authentifié."
+
+msgid  "Password checking"
+msgstr "Vérification du mot de passe"
+
+msgid  "Retype the password."
+msgstr "Entrez de nouveau le mot de passe."
+
+msgid  "Mismatching passwords."
+msgstr "Les mots de passe de correspondent pas."
