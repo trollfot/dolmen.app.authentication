@@ -1,11 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import grok
 import megrok.menu
 import zope.schema
 import zope.interface
-import megrok.z3cform.base as z3cform
+import grokcore.view as grok
 
 from zope.event import notify
 from zope.component import getUtility
@@ -14,6 +13,7 @@ from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from dolmen.app.layout import Form
+from dolmen.forms.base import Fields, button
 from dolmen.app.authentication import events
 from dolmen.app.authentication import IUserDirectory
 from dolmen.app.authentication.browser import UserAnonymousMenu
@@ -44,14 +44,14 @@ class Login(Form):
     prefix = ""
     label = _(u"Identify yourself")
     form_name = _(u"Login form")
-    fields = z3cform.field.Fields(ILoginForm)
+    fields = Fields(ILoginForm)
 
     def updateWidgets(self):
         Form.updateWidgets(self)
         self.widgets.prefix = ''
         self.widgets.update()
 
-    @z3cform.button.buttonAndHandler(_('Log in'), name='login')
+    @button.buttonAndHandler(_('Log in'), name='login')
     def login(self, data):
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             self.status = _(u"Login failed")
