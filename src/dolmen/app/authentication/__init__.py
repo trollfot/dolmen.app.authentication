@@ -1,9 +1,4 @@
-try:
-    __import__('pkg_resources').declare_namespace(__name__)
-except ImportError:
-    from pkgutil import extend_path
-    __path__ = extend_path(__path__, __name__)
-
+# -*- coding: utf-8 -*-
 
 from interfaces import IUser, IUserDirectory
 from base_plugin import initialize_auth

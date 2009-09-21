@@ -62,7 +62,7 @@ class IChangePassword(Interface):
 
 
         
-class IPrincipal(zope.security.interfaces.IPrincipal):
+class IPrincipal(zope.security.interfaces.IGroupAwarePrincipal):
     """Principals are easily identifiable entities that interact
     with the content. Commonly, a principal is a user or a group.
     """
