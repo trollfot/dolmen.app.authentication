@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import grok
-from interfaces import IUser, IAccountStatus
+from interfaces import IUser, IAccountStatus, IPasswordChecker
 from zope.component import queryUtility
 from dolmen.app.authentication import IUserDirectory
 from zope.app.authentication.session import SessionCredentialsPlugin
@@ -58,9 +58,10 @@ class UserAuthenticatorPlugin(grok.GlobalUtility):
             return None
 
         account = self.getAccount(credentials['login'])
+        pass_checker = IPasswordChecker(account)
 
         if (account is None or
-            not account.checkPassword(credentials['password'])):
+            not pass_checker.checkPassword(credentials['password'])):
             return None
 
         status = IAccountStatus(account, None)

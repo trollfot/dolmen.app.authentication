@@ -16,7 +16,7 @@ from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
 from dolmen.app.authentication import events
 from dolmen.app.authentication import IUserDirectory
-from dolmen.app.authentication.browser import UserAnonymousMenu
+from dolmen.app.authentication.browser import UserActionsMenu
 
 _ = MessageFactory('dolmen_authentication')
 
@@ -37,9 +37,9 @@ class Login(Form):
     """A very basic implementation of a login form.
     """
     grok.title(_(u"Log in"))
-    grok.require('zope.Public')
+    grok.require('dolmen.content.View')
     grok.context(zope.interface.Interface)
-    megrok.menu.menuitem(UserAnonymousMenu)
+    megrok.menu.menuitem(UserActionsMenu)
 
     prefix = ""
     label = _(u"Identify yourself")

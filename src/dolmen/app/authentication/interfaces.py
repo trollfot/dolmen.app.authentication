@@ -24,7 +24,7 @@ class IUserDirectory(Interface):
         """
 
 
-class IPassProtected(Interface):
+class IPasswordProtected(Interface):
     """This interface defines items protected by a password.
     """
     password = schema.Password(
@@ -33,22 +33,21 @@ class IPassProtected(Interface):
         required = True
         )
 
+
+class IPasswordChecker(Interface):
+    """This interface defines items that can challenge a
+    given value against a stored password value.
+    """
     def checkPassword(password):
         """Challenges the input password with the stored one.
         Returns True if the passwords match, False otherwise.
         """
 
 
-class IChangePassword(Interface):
+class IChangePassword(IPasswordProtected):
     """This interface defines a convenient way to change a password,
     including a double check.
-    """
-    password = schema.Password(
-        title = _(u"Password"),
-        description = _(u"Enter a password"),
-        required = True
-        )
-    
+    """    
     verify_pass = schema.Password(
         title = _(u"Password checking"),
         description = _(u"Retype the password."),
@@ -84,9 +83,9 @@ class IPrincipal(zope.security.interfaces.IGroupAwarePrincipal):
         )
 
 
-class IUser(IPrincipal, IPassProtected):
+class IUser(IPrincipal, IPasswordProtected):
     containers(IUserDirectory)
-
+    
 
 class IGroup(IPrincipal):
     pass

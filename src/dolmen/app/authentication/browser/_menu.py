@@ -20,15 +20,10 @@ grok.templatedir('templates')
 grok.context(Interface)
 
 
-class UserAnonymousMenu(megrok.menu.Menu):
-    megrok.menu.name(u'user_anonymous')
+class UserActionsMenu(megrok.menu.Menu):
+    megrok.menu.name(u'user-actions')
     megrok.menu.title(u'Login and user actions')
 
-
-class UserAuthenticatedMenu(megrok.menu.Menu):
-    megrok.menu.name(u'user_authenticated')
-    megrok.menu.title(u'Login and user actions')
-    
 
 class AuthenticationBar(grok.Viewlet):
     grok.name('dolmen.authentication')
@@ -36,34 +31,20 @@ class AuthenticationBar(grok.Viewlet):
     grok.order(20)
     grok.template('menu')
 
-
-    def _authenticated(self):
-        menu = getUtility(IBrowserMenu, u'user_authenticated')
+    def menu(self):
+        menu = getUtility(IBrowserMenu, u'user-actions')
         return menu.getMenuItems(self.context, self.request)
 
-
-    def _anonymous(self):
-        menu = getUtility(IBrowserMenu, u'user_anonymous')
-        return menu.getMenuItems(self.context, self.request)
-
-        
     def update(self):
-        self.anonymous = IUnauthenticatedPrincipal.providedBy(
-            self.request.principal
-            )
         self.contexturl = AbsoluteURL(self.context, self.request)
-
-        if not self.anonymous:
-            self.principal = self.request.principal.title
-            self.actions = self._authenticated()
-        else:
-            self.actions = self._anonymous()
-
+        self.actions = self.menu()
+ 
 
 class LogoutAction(grok.View):
     grok.title(_(u'Log out'))
     grok.template('logout')
-    megrok.menu.menuitem(UserAuthenticatedMenu)
+    grok.require('dolmen.user.CanLogout')
+    megrok.menu.menuitem(UserActionsMenu)
 
     def update(self):
         notify(events.UserLogoutEvent(self.request.principal))
