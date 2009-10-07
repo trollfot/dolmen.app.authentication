@@ -28,7 +28,8 @@ setup(name = name,
           'dolmen.app.site',
           'dolmen.app.security',
           'dolmen.app.layout',
-          'z3c.schema'
+          'z3c.schema',
+          'wc.cookiecredentials'
       ],
       classifiers = [
         'Development Status :: 4 - Beta',
