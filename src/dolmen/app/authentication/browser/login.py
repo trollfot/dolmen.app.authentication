@@ -1,24 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import megrok.menu
 import zope.schema
 import zope.interface
 import grokcore.view as grok
 
 from zope.event import notify
 from zope.component import getUtility
-from zope.i18nmessageid import MessageFactory
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
-from dolmen.app.authentication import events
+from dolmen.app.authentication import events, mf as _
 from dolmen.app.authentication import IUserDirectory
-from dolmen.app.authentication.browser import UserActionsMenu
-
-_ = MessageFactory('dolmen_authentication')
+from dolmen.app.authentication.browser import AnonymousMenuEntry
 
 
 class ILoginForm(zope.interface.Interface):
@@ -33,13 +29,12 @@ class ILoginForm(zope.interface.Interface):
         )
 
 
-class Login(Form):
+class Login(Form, AnonymousMenuEntry):
     """A very basic implementation of a login form.
     """
     grok.title(_(u"Log in"))
-    grok.require('dolmen.content.View')
+    grok.require('zope.View')
     grok.context(zope.interface.Interface)
-    megrok.menu.menuitem(UserActionsMenu)
 
     prefix = ""
     label = _(u"Identify yourself")

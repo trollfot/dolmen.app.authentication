@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from provider import IUsersListing, UsersProvider
-from _menu import UserActionsMenu
-from _menu import AuthenticationBar, LogoutAction, LoggedOut
+from actions import AnonymousActionsMenu, AnonymousMenuEntry
+from actions import UserActionsMenu, UserMenuEntry
 from login import ILoginForm, Login
+from logout import LogoutAction, LoggedOut
