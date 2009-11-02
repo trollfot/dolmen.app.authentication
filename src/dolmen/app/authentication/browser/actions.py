@@ -38,7 +38,7 @@ class ActionBarViewlet(MenuViewlet):
     grok.order(20)
     grok.name('dolmen.actionbar')
     grok.require('dolmen.content.View')
-    grok.viewletmanager(master.DolmenTop)
+    grok.viewletmanager(master.Top)
 
     @property
     def menu_name(self):
