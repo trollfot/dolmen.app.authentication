@@ -5,10 +5,7 @@ from dolmen.app.authentication import IUserDirectory
 from dolmen.app.authentication import IAccountStatus, IPasswordChecker
 
 from zope.component import queryUtility
-from zope.app.authentication.interfaces import IPrincipalInfo
-from zope.app.authentication.interfaces import ICredentialsPlugin
-from zope.app.authentication.interfaces import IAuthenticatorPlugin
-from zope.app.authentication.session import SessionCredentialsPlugin
+from zope.app.authentication import interfaces as auth
 from wc.cookiecredentials.plugin import CookieCredentialsPlugin
 
 
@@ -21,7 +18,7 @@ def initialize_pau(PAU):
 
 class MySessionCredentialsPlugin(grok.GlobalUtility, CookieCredentialsPlugin):
     grok.name('credentials')
-    grok.provides(ICredentialsPlugin)
+    grok.provides(auth.ICredentialsPlugin)
 
     loginpagename = 'login'
     loginfield = 'login'
@@ -29,7 +26,7 @@ class MySessionCredentialsPlugin(grok.GlobalUtility, CookieCredentialsPlugin):
 
 
 class UserAuthenticatorPlugin(grok.GlobalUtility):
-    grok.provides(IAuthenticatorPlugin)
+    grok.provides(auth.IAuthenticatorPlugin)
     grok.name('users')
 
     def getAccount(self, id):
@@ -59,7 +56,7 @@ class UserAuthenticatorPlugin(grok.GlobalUtility):
         if checker.checkPassword(passwd) is not True:
             return None
 
-        return IPrincipalInfo(account)
+        return auth.IPrincipalInfo(account)
 
 
     def authenticateCredentials(self, credentials):
@@ -81,5 +78,5 @@ class UserAuthenticatorPlugin(grok.GlobalUtility):
     def principalInfo(self, id):
         account = self.getAccount(id)
         if account is not None:
-            return IPrincipalInfo(account)
+            return auth.IPrincipalInfo(account)
         return None

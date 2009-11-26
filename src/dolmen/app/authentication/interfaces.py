@@ -7,7 +7,7 @@ from z3c.schema.email import RFC822MailAddress
 from zope.i18nmessageid import MessageFactory
 from zope.interface.exceptions import Invalid
 from zope.interface import Interface, Attribute, invariant
-from zope.app.container.constraints import contains, containers
+from zope.container.constraints import contains, containers
 
 _ = MessageFactory('dolmen_authentication')
 
