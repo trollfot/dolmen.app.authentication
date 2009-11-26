@@ -33,7 +33,7 @@ class Login(Form, AnonymousMenuEntry):
     """A very basic implementation of a login form.
     """
     grok.title(_(u"Log in"))
-    grok.require('zope.View')
+    grok.require('dolmen.user.CanLogin')
     grok.context(zope.interface.Interface)
 
     prefix = ""
