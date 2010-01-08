@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from zope.i18nmessageid import MessageFactory
-mf = MessageFactory('dolmen_authentication')
+mf = MessageFactory('dolmen.app.authentication')
 
 from interfaces import IUser, IUserDirectory
 from interfaces import IPrincipal, IAccountStatus
