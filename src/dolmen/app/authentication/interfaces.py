@@ -8,8 +8,7 @@ from zope.i18nmessageid import MessageFactory
 from zope.interface.exceptions import Invalid
 from zope.interface import Interface, Attribute, invariant
 from zope.container.constraints import contains, containers
-
-_ = MessageFactory('dolmen_authentication')
+from dolmen.app.authentication import mf as _
 
 
 class IUserDirectory(Interface):
