@@ -5,15 +5,18 @@ from dolmen.app.authentication import IUserDirectory
 from dolmen.app.authentication import IAccountStatus, IPasswordChecker
 
 from zope.component import queryUtility
+from zope.principalregistry.principalregistry import principalRegistry
 from zope.app.authentication import interfaces as auth
+from zope.app.authentication.principalfolder import PrincipalInfo
+from zope.app.authentication.httpplugins import HTTPBasicAuthCredentialsPlugin
 from wc.cookiecredentials.plugin import CookieCredentialsPlugin
 
 
 def initialize_pau(PAU):
     """Initialize an authentication plugin.
     """
-    PAU.credentialsPlugins = ["No Challenge if Authenticated", "credentials"]
-    PAU.authenticatorPlugins = ['users']
+    PAU.authenticatorPlugins = ['userdirectory', "principalregistry"]
+    PAU.credentialsPlugins = ["credentials", "No Challenge if Authenticated"]
 
 
 class MySessionCredentialsPlugin(grok.GlobalUtility, CookieCredentialsPlugin):
@@ -25,9 +28,50 @@ class MySessionCredentialsPlugin(grok.GlobalUtility, CookieCredentialsPlugin):
     passwordfield = 'password'
 
 
+class PrincipalRegistryAuthenticator(grok.GlobalUtility):
+    """An authenticator plugin, that authenticates principals against
+    the global principal registry.
+
+    This authenticator does not support own prefixes, because the
+    prefix of its principals is already defined in another place
+    (site.zcml). Therefore we get and give back IDs as they are.
+    """
+    grok.name('principalregistry')
+    grok.provides(auth.IAuthenticatorPlugin)
+
+    def authenticateCredentials(self, credentials):
+        """Return principal info if credentials can be authenticated
+        """
+        if not isinstance(credentials, dict):
+            return None
+        if not ('login' in credentials and 'password' in credentials):
+            return None
+        principal = None
+        login, password = credentials['login'], credentials['password']
+        try:
+            principal = principalRegistry.getPrincipalByLogin(login)
+        except KeyError:
+            return
+        if principal and principal.validate(password):
+            print principal.id
+            return PrincipalInfo(unicode(principal.id),
+                                 principal.getLogin(),
+                                 principal.title,
+                                 principal.description)
+        return
+
+    def principalInfo(self, id):
+        principal = principalRegistry.getPrincipal(id)
+        if principal is not None:
+            return PrincipalInfo(unicode(principal.id),
+                                 principal.getLogin(),
+                                 principal.title,
+                                 principal.description)
+
+
 class UserAuthenticatorPlugin(grok.GlobalUtility):
     grok.provides(auth.IAuthenticatorPlugin)
-    grok.name('users')
+    grok.name('userdirectory')
 
     def getAccount(self, id):
         users = queryUtility(IUserDirectory)

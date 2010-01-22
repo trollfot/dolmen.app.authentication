@@ -8,7 +8,7 @@ import grokcore.view as grok
 from zope.event import notify
 from zope.component import getUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
@@ -51,10 +51,17 @@ class Login(Form, AnonymousMenuEntry):
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             self.status = _(u"Login failed")
         else:
+            self.flash(_('You are now logged in as ${name}',
+                         mapping={"name": self.request.principal.id}))
             notify(events.UserLoginEvent(self.request.principal))
             camefrom = self.request.get('camefrom', None)
             if not camefrom:
+                import pdb
+                pdb.set_trace()
                 directory = getUtility(IUserDirectory)
                 user = directory.getUserByLogin(self.request.principal.id)
-                camefrom = absoluteURL(user, self.request)
+                if user is not None:
+                    camefrom = absoluteURL(user, self.request)
+                else:
+                    camefrom = absoluteURL(self.context, self.request)
             self.redirect(camefrom)

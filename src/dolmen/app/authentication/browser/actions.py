@@ -4,13 +4,11 @@ import grok
 import megrok.menu
 
 from zope.interface import Interface
-from zope.i18nmessageid import MessageFactory
 from dolmen.app.layout import master, MenuViewlet
 from dolmen.app.authentication import permissions
 from dolmen.app.security.content import CanViewContent
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
-_ = MessageFactory("dolmen_authentication")
 grok.context(Interface)
 
 

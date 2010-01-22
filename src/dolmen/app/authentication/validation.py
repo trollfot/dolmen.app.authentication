@@ -2,7 +2,7 @@
 
 from zope.schema import ValidationError
 from zope.interface import implements
-from zope.app.form.interfaces import IWidgetInputError
+from zope.formlib.interfaces import IWidgetInputError
 
 
 class UserRegistrationError(ValidationError):

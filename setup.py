@@ -6,6 +6,9 @@ version = '0.1'
 readme = open("README.txt").read()
 history = open(join('docs', 'HISTORY.txt')).read().replace(name + ' - ', '')
 
+test_requires = [
+]
+
 setup(name = name,
       version = version,
       description = 'Dolmen CMS authentication package',
@@ -22,6 +25,7 @@ setup(name = name,
       include_package_data = True,
       platforms = 'Any',
       zip_safe = False,
+      extras_require={'test': test_requires},
       install_requires=[
           'setuptools',
           'grok',
@@ -40,6 +44,16 @@ setup(name = name,
           'dolmen.app.layout',
           'wc.cookiecredentials>=3.9',
           'zope.securitypolicy',
+          'zope.site',
+          'zope.interface',
+          'zope.event',
+          'zope.container',
+          'zope.i18nmessageid',
+          'zope.component',
+          'zope.authentication',
+          'zope.app.security',
+          'dolmen.content',
+          'dolmen.app.security',
       ],
       classifiers = [
         'Development Status :: 4 - Beta',
