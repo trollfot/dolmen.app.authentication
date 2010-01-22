@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import grok
-from dolmen.app.authentication import IUserDirectory
-from dolmen.app.authentication import IAccountStatus, IPasswordChecker
-
 from zope.component import queryUtility
 from zope.principalregistry.principalregistry import principalRegistry
 from zope.app.authentication import interfaces as auth
 from zope.app.authentication.principalfolder import PrincipalInfo
 from zope.app.authentication.httpplugins import HTTPBasicAuthCredentialsPlugin
 from wc.cookiecredentials.plugin import CookieCredentialsPlugin
+from dolmen.authentication import (
+    IAccountStatus, IPasswordChecker, IPrincipalFolder)
 
 
 def initialize_pau(PAU):
@@ -74,7 +73,7 @@ class UserAuthenticatorPlugin(grok.GlobalUtility):
     grok.name('userdirectory')
 
     def getAccount(self, id):
-        users = queryUtility(IUserDirectory)
+        users = queryUtility(IPrincipalFolder)
         if not users:
             return
         return users.getUserByLogin(id)

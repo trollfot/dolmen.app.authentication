@@ -12,8 +12,8 @@ from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
-from dolmen.app.authentication import events, mf as _
-from dolmen.app.authentication import IUserDirectory
+from dolmen.authentication import UserLoginEvent, IPrincipalFolder
+from dolmen.app.authentication import MF as _
 from dolmen.app.authentication.browser import AnonymousMenuEntry
 
 
@@ -53,12 +53,10 @@ class Login(Form, AnonymousMenuEntry):
         else:
             self.flash(_('You are now logged in as ${name}',
                          mapping={"name": self.request.principal.id}))
-            notify(events.UserLoginEvent(self.request.principal))
+            notify(UserLoginEvent(self.request.principal))
             camefrom = self.request.get('camefrom', None)
             if not camefrom:
-                import pdb
-                pdb.set_trace()
-                directory = getUtility(IUserDirectory)
+                directory = getUtility(IPrincipalFolder)
                 user = directory.getUserByLogin(self.request.principal.id)
                 if user is not None:
                     camefrom = absoluteURL(user, self.request)

@@ -8,7 +8,7 @@ from zope.site.hooks import getSite
 from dolmen.app import layout
 from dolmen.app.authentication import IUser
 from dolmen.app.authentication import permissions
-from dolmen.app.authentication import mf as _
+from dolmen.app.authentication import MF as _
 from dolmen.forms.base import Fields
 
 

@@ -3,6 +3,8 @@
 from dolmen.app.authentication import MF as _
 from dolmen.authentication import (
     IPrincipal, IPasswordProtected, IPrincipalFolder)
+# BBB
+from dolmen.authentication import IPrincipalFolder as IUserDirectory
 
 from z3c.schema.email import RFC822MailAddress
 from zope import schema
