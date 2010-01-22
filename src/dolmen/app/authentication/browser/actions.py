@@ -6,6 +6,8 @@ import megrok.menu
 from zope.interface import Interface
 from zope.i18nmessageid import MessageFactory
 from dolmen.app.layout import master, MenuViewlet
+from dolmen.app.authentication import permissions
+from dolmen.app.security.content import CanViewContent
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 _ = MessageFactory("dolmen_authentication")
@@ -20,7 +22,7 @@ class AnonymousActionsMenu(megrok.menu.Menu):
 class AnonymousMenuEntry(object):
     grok.baseclass()
     megrok.menu.menuitem(AnonymousActionsMenu)
-    grok.require('dolmen.user.CanLogin')
+    grok.require(permissions.CanLogin)
 
 
 class UserActionsMenu(megrok.menu.Menu):
@@ -37,7 +39,7 @@ class UserMenuEntry(object):
 class ActionBarViewlet(MenuViewlet):
     grok.order(20)
     grok.name('dolmen.actionbar')
-    grok.require('dolmen.content.View')
+    grok.require(CanViewContent)
     grok.viewletmanager(master.Top)
 
     @property

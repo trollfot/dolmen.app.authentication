@@ -7,17 +7,22 @@ from zope.site.hooks import getSite
 
 from dolmen.app import layout
 from dolmen.app.authentication import IUser
+from dolmen.app.authentication import permissions
 from dolmen.app.authentication import mf as _
 from dolmen.forms.base import Fields
 
 
 class IRoleGranting(Interface):
+    """Defines a component allowing you to chose roles.
+    """
     roles = schema.List(
         value_type=schema.Choice(vocabulary='Role Ids'),
         required=True)
 
 
 class UserGranting(grok.Adapter):
+    """Grant a role to a user.
+    """
     grok.implements(IRoleGranting)
     grok.context(IUser)
 
@@ -50,7 +55,7 @@ class UserRoles(layout.Edit):
     grok.context(IUser)
     grok.name('grant_role')
     grok.title(_(u"Grant role"))
-    grok.require("dolmen.security.ManageUsers")
+    grok.require(permissions.ManageUsers)
 
     form_name = _(u"Select user's roles")
     fields = Fields(IRoleGranting)
