@@ -12,7 +12,7 @@ from dolmen.app.authentication import MF as _
 from dolmen.forms.base import Fields
 
 
-class IRoleGranting(Interface):
+class IUserRoles(Interface):
     """Defines a component allowing you to chose roles.
     """
     roles = schema.List(
@@ -20,11 +20,11 @@ class IRoleGranting(Interface):
         required=True)
 
 
-class UserGranting(grok.Adapter):
+class UserRoles(grok.Adapter):
     """Grant a role to a user.
     """
-    grok.implements(IRoleGranting)
     grok.context(IUser)
+    grok.implements(IUserRoles)
 
     def __init__(self, context):
         self.context = context
@@ -32,30 +32,30 @@ class UserGranting(grok.Adapter):
         self.manager = IPrincipalRoleManager(site)
         self.setting = self.manager.getRolesForPrincipal(self.context.id)
 
-    def get_roles(self):
-        return [role[0] for role in self.setting if role[1] is Allow]
+    @apply
+    def roles():
+        def get(self):
+            return [role[0] for role in self.setting if role[1] is Allow]
 
-    def set_roles(self, roles):
-        userid = self.context.id
+        def set(self, roles):
+            userid = self.context.id
 
-        # removing undefined roles
-        for role in self.setting:
-            if role[0] not in roles:
-                if role[1] is Allow:
-                    self.manager.unsetRoleForPrincipal(role[0], userid)
+            # removing undefined roles
+            for role in self.setting:
+                if role[0] not in roles:
+                    if role[1] is Allow:
+                        self.manager.unsetRoleForPrincipal(role[0], userid)
 
-        # setting new roles
-        for role in roles:
-            self.manager.assignRoleToPrincipal(role, userid)
-
-    roles = property(get_roles, set_roles)
+            # setting new roles
+            for role in roles:
+                self.manager.assignRoleToPrincipal(role, userid)
 
 
-class UserRoles(layout.Edit):
+class EditUserRoles(layout.Edit):
     grok.context(IUser)
     grok.name('grant_role')
     grok.title(_(u"Grant role"))
     grok.require(permissions.ManageUsers)
 
     form_name = _(u"Select user's roles")
-    fields = Fields(IRoleGranting)
+    fields = Fields(IUserRoles)
