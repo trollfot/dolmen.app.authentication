@@ -37,3 +37,4 @@ class IUser(IPrincipal, IPasswordProtected):
         description = _(u'Enter a valid email address.'),
         required = False
         )
+

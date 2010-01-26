@@ -9,6 +9,7 @@ from zope.event import notify
 from zope.component import getUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.location.interfaces import ILocation
 
 from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
@@ -48,18 +49,17 @@ class Login(Form, AnonymousMenuEntry):
 
     @button.buttonAndHandler(_('Log in'), name='login')
     def login(self, data):
-        if IUnauthenticatedPrincipal.providedBy(self.request.principal):
+        principal = self.request.principal
+        if IUnauthenticatedPrincipal.providedBy(principal):
             self.status = _(u"Login failed")
         else:
             self.flash(_('You are now logged in as ${name}',
-                         mapping={"name": self.request.principal.id}))
-            notify(UserLoginEvent(self.request.principal))
+                         mapping={"name": principal.id}))
+            notify(UserLoginEvent(principal))
             camefrom = self.request.get('camefrom', None)
             if not camefrom:
-                directory = getUtility(IPrincipalFolder)
-                user = directory.getUserByLogin(self.request.principal.id)
-                if user is not None:
-                    camefrom = absoluteURL(user, self.request)
+                if ILocation.providedBy(principal):
+                    camefrom = absoluteURL(principal, self.request)
                 else:
                     camefrom = absoluteURL(self.context, self.request)
             self.redirect(camefrom)
