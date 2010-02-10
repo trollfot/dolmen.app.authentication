@@ -55,20 +55,6 @@ class ActiveFoldersChoice(grok.Adapter):
             tuple(auths.difference(folders)) + values)
 
 
-class AuthManagement(grok.MultiAdapter):
-    grok.name('users')
-    grok.provides(ITraversable)
-    grok.adapts(IApplication, IHTTPRequest)
-
-    def __init__(self, context, request=None):
-        self.context = context
-        self.request = request
-
-    def traverse(self, name, ignore):
-        pau = getUtility(IAuthentication)
-        return LocationProxy(pau, self.context, "++users++")
-
-
 class PAUIndex(Index):
     grok.context(IAuthentication)
     
