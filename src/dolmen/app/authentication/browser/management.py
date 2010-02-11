@@ -69,7 +69,8 @@ class PrincipalFolders(Page, ContextualMenuEntry):
 
 
 class PAUPreferences(Edit):
-    grok.name('preferences')
+    grok.name('activate.authenticator')
     grok.context(IAuthentication)
     fields = Fields(IActiveFolders)
-    label = u"Preferences"
+    
+    label = u"Manage your authentication sources"
