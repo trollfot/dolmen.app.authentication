@@ -55,19 +55,17 @@ class ActiveFoldersChoice(grok.Adapter):
             tuple(auths.difference(folders)) + values)
 
 
-class PAUIndex(Index):
+class ManageAuth(Index):
     grok.context(IAuthentication)
-    
-    def render(self):
-        return u"Authentication management"
+ 
 
-
-class PAUPrincipalFolder(Page, ContextualMenuEntry):
+class PrincipalFolders(Page, ContextualMenuEntry):
     grok.title("User folders")
     grok.context(IAuthentication)
     
-    def render(self):
-        return self.context.authenticatorPlugins
+    def update(self):
+        self.folders = self.context.authenticatorPlugins
+        self.credentials = self.context.credentialsPlugins
 
 
 class PAUPreferences(Edit):
