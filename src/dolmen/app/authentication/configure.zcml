@@ -7,6 +7,7 @@
   <include package="megrok.menu" file="meta.zcml" />
   <include package="dolmen.app.layout" />
   <include package="dolmen.authentication" />
+  <include package="zope.pluggableauth" />
   <include package="dolmen.content" />
   <include package="zope.securitypolicy" />
 

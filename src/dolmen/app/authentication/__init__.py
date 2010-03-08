@@ -4,12 +4,15 @@ from zope.i18nmessageid import MessageFactory
 MF = MessageFactory('dolmen.app.authentication')
 
 import grok
+from grok import index
 from dolmen.app.site import IDolmen
+from zope.security.interfaces import IPrincipal
+
 from dolmen.app.authentication import plugins
 from dolmen.app.authentication.interfaces import IUser, IChangePassword
 from dolmen.app.authentication.browser.validation import UserRegistrationError
-from grok import index
-from zope.security.interfaces import IPrincipal
+from dolmen.app.authentication.permissions import (
+    CanLogin, CanLogout, AddUsers, ManageUsers)
 
 
 def initialize_pau(PAU):

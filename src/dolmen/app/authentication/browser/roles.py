@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import grok
 from zope import schema
 from zope.interface import Interface
@@ -34,6 +36,8 @@ class UserRoles(grok.Adapter):
 
     @apply
     def roles():
+        """Writable property for roles.
+        """
         def get(self):
             return [role[0] for role in self.setting if role[1] is Allow]
 
@@ -49,6 +53,8 @@ class UserRoles(grok.Adapter):
             # setting new roles
             for role in roles:
                 self.manager.assignRoleToPrincipal(role, userid)
+
+        return property(get, set)
 
 
 class EditUserRoles(layout.Edit):

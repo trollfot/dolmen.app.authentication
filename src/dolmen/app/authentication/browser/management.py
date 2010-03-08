@@ -10,6 +10,7 @@ from zope.location import LocationProxy
 from grok.interfaces import IApplication
 from dolmen.app.layout import Index, Page, ContextualMenuEntry, Edit
 from dolmen.forms.base import Fields
+from dolmen.app.authentication import ManageUsers
 
 from zope import interface
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
@@ -23,7 +24,8 @@ class PrincipalFoldersList(grok.GlobalUtility):
 
     def __call__(self, pau):
         return SimpleVocabulary(
-            [SimpleTerm(value=p.__name__, token=p.__name__, title=p.title)
+            [SimpleTerm(value=p.__name__, token=p.__name__,
+                        title="%s (%s)" % (p.__name__, p.title))
              for p in pau.values() if IPrincipalFolder.providedBy(p)])
 
 
@@ -57,11 +59,13 @@ class ActiveFoldersChoice(grok.Adapter):
 
 class ManageAuth(Index):
     grok.context(IAuthentication)
- 
+    grok.require(ManageUsers)
+
 
 class PrincipalFolders(Page, ContextualMenuEntry):
     grok.title("User folders")
     grok.context(IAuthentication)
+    grok.require(ManageUsers)
     
     def update(self):
         self.folders = self.context.authenticatorPlugins
@@ -71,6 +75,7 @@ class PrincipalFolders(Page, ContextualMenuEntry):
 class PAUPreferences(Edit):
     grok.name('activate.authenticator')
     grok.context(IAuthentication)
-    fields = Fields(IActiveFolders)
+    grok.require(ManageUsers)
     
+    fields = Fields(IActiveFolders)
     label = u"Manage your authentication sources"

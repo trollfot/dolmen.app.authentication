@@ -31,7 +31,6 @@ class GlobalRegistryAuth(grok.GlobalUtility):
         except KeyError:
             return
         if principal and principal.validate(password):
-            print principal.id
             return PrincipalInfo(unicode(principal.id),
                                  principal.getLogin(),
                                  principal.title,
