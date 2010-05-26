@@ -3,8 +3,10 @@ from os.path import join
 
 name = 'dolmen.app.authentication'
 version = '0.1'
-readme = open("README.txt").read()
-history = open(join('docs', 'HISTORY.txt')).read().replace(name + ' - ', '')
+readme = open(
+    join('src', 'dolmen', 'app', 'authentication', 'README.txt')).read()
+history = open(
+    join('docs', 'HISTORY.txt')).read().replace(name + ' - ', '')
 
 test_requires = [
 ]

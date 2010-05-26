@@ -15,7 +15,9 @@ class GlobalRegistryAuth(grok.GlobalUtility):
     (site.zcml). Therefore we get and give back IDs as they are.
     """
     grok.name("globalregistry")
-    grok.provides(IAuthenticatorPlugin)
+    grok.implements(IAuthenticatorPlugin)
+
+    __parent__ = None
 
     def authenticateCredentials(self, credentials):
         """Return principal info if credentials can be authenticated
