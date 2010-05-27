@@ -8,6 +8,13 @@ groups management in a Dolmen application. Built on the on the top of
 set of plugins and base classes that can help building a complex users
 & groups system.
 
+Initial Grok imports
+====================
+
+  >>> import grok
+  >>> from grokcore.component.testing import grok_component
+
+
 Credentials plugins
 ===================
 
@@ -208,8 +215,6 @@ Providing the adapter will allow us to successfully retrieve the
 principal::
 
   >>> from dolmen.authentication import IPasswordChecker
-  >>> import grokcore.component as grok
-  >>> from grokcore.component.testing import grok_component
 
   >>> class GrantingAccessOnBoo(grok.Adapter):
   ...     grok.context(IPrincipal)
@@ -262,3 +267,53 @@ In this example, we explictly disallow the user with the identifier
   ...            {'login': 'stilgar', 'password': 'boo'})
   >>> found is None
   True
+
+
+Setting up a site
+=================
+
+  >>> from dolmen.app.site import Dolmen
+  >>> root = getRootFolder()
+
+  >>> site = Dolmen()
+  >>> grok.notify(grok.ObjectCreatedEvent(site))
+  >>> root['site'] =  site
+
+  >>> from zope.authentication.interfaces import IAuthentication
+  >>> from zope.pluggableauth import PluggableAuthentication
+  >>> from dolmen.app.authentication import initialize_pau
+
+  >>> PAU = PluggableAuthentication()
+  >>> len(PAU.authenticatorPlugins)
+  0
+  >>> len(PAU.credentialsPlugins)
+  0
+
+
+  >>> initialize_pau(PAU)
+  >>> print PAU.authenticatorPlugins
+  ('globalregistry',)
+  >>> print PAU.credentialsPlugins
+  ('cookies', 'No Challenge if Authenticated')
+
+  >>> from zope.site.site import LocalSiteManager
+  >>> lsm = LocalSiteManager(site)
+  >>> lsm.registerUtility(PAU, IAuthentication, '')
+
+
+
+Introspection
+-------------
+
+Imagine you go to a page that anonymous users don't have access to:
+
+  >>> from zope.app.wsgi.testlayer import Browser
+  >>> browser = Browser()
+  >>> browser.handleErrors = False
+
+  >>> browser.open("http://localhost/site/edit")
+
+As you can see, the plug-in redirects you to the login page:
+
+  >>> print browser.url
+  http://localhost/@@login?camefrom=%2F%40%40edit

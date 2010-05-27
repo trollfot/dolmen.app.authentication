@@ -5,19 +5,41 @@
   <include package="zope.component" file="meta.zcml" />
   <include package="zope.i18n" file="meta.zcml" />
   <include package="zope.publisher" file="meta.zcml" />
+  <include package="zope.browserpage" file="meta.zcml" />
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.principalregistry" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
 
+  <include package="zope.login" />
   <include package="zope.security" />
+  <include package="zope.annotation" />
   <include package="zope.password" />
   <include package="zope.publisher" />
+  <include package="zope.traversing" />
+  <include package="zope.pluggableauth" />
+  <include package="zope.site" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.container" />
   <include package="zope.principalregistry" />
   <include package="dolmen.app.authentication" />
+  <include package="zope.app.wsgi" />
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.publication" />
 
   <!-- Security -->
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+
+  <grant
+      permission="zope.View"
+      principal="zope.anybody"
       />
 
   <principal

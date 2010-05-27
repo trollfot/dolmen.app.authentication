@@ -16,6 +16,7 @@ install_requires=[
     'dolmen.content',
     'dolmen.forms.base',
     'grok',
+    'grokcore.component',
     'grokcore.view',
     'megrok.menu',
     'setuptools',
@@ -39,7 +40,6 @@ install_requires=[
     ]
 
 test_requires = [
-    'grokcore.component',
     'zope.app.wsgi',
     'zope.i18n',
     'zope.password',

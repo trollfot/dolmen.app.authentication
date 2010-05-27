@@ -31,9 +31,9 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
     __parent__ = None
 
     # Required by zope.pluggableauth's IBrowserFormChallenger
-    loginpagename = 'login'
-    loginfield = 'login'
-    passwordfield = 'password'
+    loginpagename = u'login'
+    loginfield = u'login'
+    passwordfield = u'password'
 
     # Required by zope.pluggableauth's ICredentialsPlugin
     challengeProtocol = None

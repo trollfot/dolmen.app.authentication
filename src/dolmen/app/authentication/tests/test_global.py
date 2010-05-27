@@ -1,32 +1,32 @@
 # -*- coding: utf-8 -*-
 
+import re
+import doctest
 import unittest
 import zope.component
 
+from dolmen.app.site import Dolmen
 from dolmen.app.authentication import tests
 from zope.app.wsgi.testlayer import BrowserLayer
+from zope.site.site import LocalSiteManager
 from zope.interface import Interface
-from zope.testing import doctest
+from zope.testing import renormalizing
 
 
-class DolmenApplicationAuthLayer(BrowserLayer):
+FunctionalLayer = BrowserLayer(tests)
 
-    def setUp(self):
-        BrowserLayer.setUp(self)
-        zope.component.hooks.setHooks()
- 
-    def tearDown(self):
-        zope.component.hooks.resetHooks()
-        zope.component.hooks.setSite()
-        BrowserLayer.tearDown(self)
-
+checker = renormalizing.RENormalizing([
+    # Accommodate to exception wrapping in newer versions of mechanize
+    (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
+    ])
 
 def test_suite():
     suite = unittest.TestSuite()
     readme = doctest.DocFileSuite(
         '../README.txt',
-        globs={'__name__': 'dolmen.app.authentication'},
+        checker=checker,
+        globs={'getRootFolder': FunctionalLayer.getRootFolder},
         optionflags=(doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS))
-    readme.layer = DolmenApplicationAuthLayer(tests)
+    readme.layer = FunctionalLayer
     suite.addTest(readme)
     return suite
