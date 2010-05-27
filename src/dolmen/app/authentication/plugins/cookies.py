@@ -27,9 +27,16 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
     grok.provides(ICredentialsPlugin)
     grok.implements(ICredentialsPlugin, ICookieCredentials)
 
+    # ILocation's information
+    __parent__ = None
+
+    # Required by zope.pluggableauth's IBrowserFormChallenger
     loginpagename = 'login'
     loginfield = 'login'
     passwordfield = 'password'
+
+    # Required by zope.pluggableauth's ICredentialsPlugin
+    challengeProtocol = None
     cookie_name = 'dolmen.authcookie'
 
     def extractCredentials(self, request):

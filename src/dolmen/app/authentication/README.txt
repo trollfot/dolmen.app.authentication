@@ -11,6 +11,8 @@ set of plugins and base classes that can help building a complex users
 Credentials plugins
 ===================
 
+  >>> from zope.pluggableauth.interfaces import ICredentialsPlugin
+
 Credentials plugins are responsible for the extraction of credentials,
 in order to identify a user. ``dolmen.app.authentication`` provides a
 single plugin, out of the box.
@@ -45,8 +47,13 @@ cookie ourselves in a test request::
 Calling the plugin credentials extractor will give us exactly what we
 need to proceed to the authentication::
 
+  >>> from zope.interface.verify import verifyObject
   >>> from dolmen.app.authentication.plugins import CookiesCredentials
+
   >>> plugin = CookiesCredentials()
+  >>> verifyObject(ICredentialsPlugin, plugin)
+  True
+
   >>> print plugin.extractCredentials(request)
   {'login': 'mgr', 'password': 'mgrpw'}
 
@@ -76,7 +83,6 @@ meant to look up the principal inside that global registry.
 We verify the integrity of our implementation against the
 requirements::
 
-  >>> from zope.interface.verify import verifyObject
   >>> plugin = plugins.GlobalRegistryAuth()
   >>> verifyObject(IAuthenticatorPlugin, plugin)
   True
