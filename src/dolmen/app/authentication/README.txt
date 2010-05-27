@@ -18,9 +18,10 @@ Cookies Credentials
 -------------------
 
 The cookie credentials plugin extracts the credentials from cookies.
-This plugin is based on ... 's work (`` ``). It has been reimplemented
-to avoid the use of the ``zope.app`` packages and allow more
-flexibility in the changes, in the long run.
+This plugin is based on Philipp von Weitershausen's work
+(``wc.cookiecredentials``). It has been reimplemented to avoid the use
+of the ``zope.app`` packages and allow more flexibility in the
+changes, in the long run.
 
 This plugin provides capabilities to::
 
