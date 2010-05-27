@@ -18,9 +18,35 @@ Cookies Credentials
 -------------------
 
 The cookie credentials plugin extracts the credentials from cookies.
+This plugin is based on ... 's work (`` ``). It has been reimplemented
+to avoid the use of the ``zope.app`` packages and allow more
+flexibility in the changes, in the long run.
 
-FIXME
+This plugin provides capabilities to::
 
+- challenge the user to enter username and password through a login
+  form and
+
+- save those credentials to a cookie from which it can read them back
+  at any later time.
+
+To check if the credentials can correctly be exacted, we can forge the
+cookie ourselves in a test request::
+
+  >>> import base64
+  >>> from zope.publisher.browser import TestRequest
+
+  >>> cookie = base64.encodestring('mgr:mgrpw')
+  >>> request = TestRequest()
+  >>> request._cookies = {'dolmen.authcookie': cookie}
+
+Calling the plugin credentials extractor will give us exactly what we
+need to proceed to the authentication::
+
+  >>> from dolmen.app.authentication.plugins import CookiesCredentials
+  >>> plugin = CookiesCredentials()
+  >>> print plugin.extractCredentials(request)
+  {'login': 'mgr', 'password': 'mgrpw'}
 
 
 Authenticator Plugins
@@ -114,20 +140,20 @@ and to store inside the plugin. Then, we can test the look up.
 In order to make the authentication pluggable, the principal
 authenticator plugin relies on 3 adapters: 
 
- - IAccountStatus : if an adaptation exist to this interface from the
-   IPrincipal object, it is used to figure out if the principal can
-   login or not. It allows the possibility to disable a user account
-   and eventually to compute that disability.
+- IAccountStatus : if an adaptation exist to this interface from the
+  IPrincipal object, it is used to figure out if the principal can
+  login or not. It allows the possibility to disable a user account
+  and eventually to compute that disability.
 
- - IPasswordChecker: this adapter is used to check the credentials. If
-   it doesnt exist (or if the IPrincipal object doesn't provide this
-   interface), the authentication is aborted and None is returned.
+- IPasswordChecker: this adapter is used to check the credentials. If
+  it doesnt exist (or if the IPrincipal object doesn't provide this
+  interface), the authentication is aborted and None is returned.
 
- - IPrincipalInfo: unlike the previous plugin, the Principal Folder
-   authenticator doesn't return directly a PrincipalInfo object but
-   uses an adapter to retrieve the appropriate principal info
-   object. This is required in order to plug specific behavior to our
-   authentication system.
+- IPrincipalInfo: unlike the previous plugin, the Principal Folder
+  authenticator doesn't return directly a PrincipalInfo object but
+  uses an adapter to retrieve the appropriate principal info
+  object. This is required in order to plug specific behavior to our
+  authentication system.
 
 
 Let's first implement a basic IPrincipalObject. Once stored, we'll be
@@ -145,16 +171,85 @@ able to start the look ups and the adapters implementations::
   ...         self.description = desc
   ...         self.groups = []
 
+We can verify our implementation against the interface::
+
   >>> stilgar = User(u"stilgar")
   >>> verifyObject(IPrincipal, stilgar)
   True
+
+The implementation is consistent. We can now persist the principal in
+the plugin container::
 
   >>> plugin['stilgar'] = stilgar
   >>> print [user for user in plugin.keys()]
   [u'stilgar']
 
+We can now try to look up the principal, using the authentication API::
+
   >>> found = plugin.authenticateCredentials(
   ...            {'login': 'stilgar', 'password': 'boo'})
+  >>> found is None
+  True
 
+The principal is not found : we do not have an adapter to
+IPasswordChecker available, therefore the authentication process has
+been aborted.
+
+Providing the adapter will allow us to successfully retrieve the
+principal::
+
+  >>> from dolmen.authentication import IPasswordChecker
+  >>> import grokcore.component as grok
+  >>> from grokcore.component.testing import grok_component
+
+  >>> class GrantingAccessOnBoo(grok.Adapter):
+  ...     grok.context(IPrincipal)
+  ...     grok.provides(IPasswordChecker)
+  ...
+  ...     def checkPassword(self, pwd):
+  ...         if pwd == 'boo':
+  ...             return True
+
+  >>> grok_component('booing', GrantingAccessOnBoo)
+  True
+ 
+  >>> found = plugin.authenticateCredentials(
+  ...            {'login': 'stilgar', 'password': 'boo'})
+  >>> found is not None
+  True
+  
+Of course, providing a wrong password will return None::
+
+  >>> found = plugin.authenticateCredentials(
+  ...            {'login': 'stilgar', 'password': 'not boo'})
+  >>> found is None
+  True
+
+As seen previously, it is possible to switch on and off the ability to
+log in, for a given user, thanks to the IAccountStatus interface::
+
+  >>> from dolmen.authentication import IAccountStatus
+
+  >>> class AllowLogin(grok.Adapter):
+  ...     grok.context(IPrincipal)
+  ...     grok.provides(IAccountStatus)
+  ...    
+  ...     @property
+  ...     def status(self):
+  ...         return "No status information available"
+  ...
+  ...     def check(self):
+  ...         if self.context.id == "stilgar":
+  ...             return False
+  ...         return True
+
+  >>> grok_component('allow', AllowLogin)
+  True
+
+In this example, we explictly disallow the user with the identifier
+"stilgar" to be retrieved by the login::
+
+  >>> found = plugin.authenticateCredentials(
+  ...            {'login': 'stilgar', 'password': 'boo'})
   >>> found is None
   True

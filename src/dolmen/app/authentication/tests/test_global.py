@@ -4,21 +4,21 @@ import unittest
 import zope.component
 
 from dolmen.app.authentication import tests
-from zope.component.testlayer import ZCMLFileLayer
+from zope.app.wsgi.testlayer import BrowserLayer
 from zope.interface import Interface
 from zope.testing import doctest
 
 
-class DolmenApplicationAuthLayer(ZCMLFileLayer):
+class DolmenApplicationAuthLayer(BrowserLayer):
 
     def setUp(self):
-        ZCMLFileLayer.setUp(self)
+        BrowserLayer.setUp(self)
         zope.component.hooks.setHooks()
  
     def tearDown(self):
         zope.component.hooks.resetHooks()
         zope.component.hooks.setSite()
-        ZCMLFileLayer.tearDown(self)
+        BrowserLayer.tearDown(self)
 
 
 def test_suite():
