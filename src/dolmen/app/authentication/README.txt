@@ -3,9 +3,10 @@ dolmen.app.authentication
 *************************
 
 ``dolmen.app.authentication`` is the package responsible for the users
-groups managements in a Dolmen application. Built on the on the top of
-``dolmen.authentication``, it provides a set of plugins and base
-classes that can help building a complex users & groups system.
+groups management in a Dolmen application. Built on the on the top of
+``dolmen.authentication`` and ``zope.pluggableauth``, it provides a
+set of plugins and base classes that can help building a complex users
+& groups system.
 
 Credentials plugins
 ===================
@@ -53,6 +54,8 @@ need to proceed to the authentication::
 Authenticator Plugins
 =====================
 
+  >>> from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+
 Authenticator plugins uses extracted credentials in order to retrieve
 and identify principals. ``dolmen.app.authentication`` provides two
 plugins.
@@ -66,7 +69,6 @@ package provides a global registry that is not persistent and
 re-constructed at each startup. The Global Registry Authenticator is
 meant to look up the principal inside that global registry.
 
-  >>> from zope.pluggableauth.interfaces import IAuthenticatorPlugin
   >>> from dolmen.app.authentication import plugins
   >>> IAuthenticatorPlugin.implementedBy(plugins.GlobalRegistryAuth)
   True
@@ -139,7 +141,7 @@ In order to test this plugin, we have to create an IPrincipal object
 and to store inside the plugin. Then, we can test the look up.
 
 In order to make the authentication pluggable, the principal
-authenticator plugin relies on 3 adapters: 
+authenticator plugin relies on 3 interfaces: 
 
 - IAccountStatus : if an adaptation exist to this interface from the
   IPrincipal object, it is used to figure out if the principal can
@@ -240,9 +242,9 @@ log in, for a given user, thanks to the IAccountStatus interface::
   ...         return "No status information available"
   ...
   ...     def check(self):
-  ...         if self.context.id == "stilgar":
-  ...             return False
-  ...         return True
+  ...         if self.context.id != "stilgar":
+  ...             return True
+  ...         return False
 
   >>> grok_component('allow', AllowLogin)
   True
