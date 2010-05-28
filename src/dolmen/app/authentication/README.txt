@@ -307,11 +307,40 @@ Imagine you go to a page that anonymous users don't have access to:
 
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
-  >>> browser.handleErrors = False
 
   >>> browser.open("http://localhost/site/@@edit")
+  >>> unauthorized = browser.contents
+  >>> 'input id="login" name="login"' in unauthorized
+  True
+  >>> 'input id="password" name="password"' in unauthorized
+  True
 
-As you can see, the plug-in redirects you to the login page:
 
-  >>> print browser.url
-  http://localhost/@@login?camefrom=%2F%40%40edit
+Logging in
+==========
+
+  >>> browser.open('http://localhost/site/@@login')
+  >>> loginpage = browser.contents
+  >>> 'input id="login" name="login"' in loginpage
+  True
+  >>> 'input id="password" name="password"' in loginpage
+  True
+
+  >>> browser.getControl('Username').value = 'mgr'
+  >>> browser.getControl('Password').value = 'mgrpw'
+  >>> browser.getControl('Log in').click()
+
+  >>> browser.url
+  'http://localhost/site'
+
+  >>> browser.open("http://localhost/site/@@edit")
+  >>> "<h1>Edit: My Dolmen Site</h1>\n" in browser.contents
+  True
+
+We can also manually destroy the cookie by invoking the logout page:
+
+  >>> print browser.cookies.keys()
+  ['dolmen.authcookie']
+  >>> browser.open("http://localhost/site/@@logoutaction")
+  >>> print browser.cookies.keys()
+  []

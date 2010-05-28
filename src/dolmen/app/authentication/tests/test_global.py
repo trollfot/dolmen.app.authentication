@@ -3,22 +3,19 @@
 import re
 import doctest
 import unittest
-import zope.component
 
-from dolmen.app.site import Dolmen
 from dolmen.app.authentication import tests
 from zope.app.wsgi.testlayer import BrowserLayer
-from zope.site.site import LocalSiteManager
-from zope.interface import Interface
 from zope.testing import renormalizing
 
 
 FunctionalLayer = BrowserLayer(tests)
 
+
 checker = renormalizing.RENormalizing([
     # Accommodate to exception wrapping in newer versions of mechanize
-    (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
-    ])
+    (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:')])
+
 
 def test_suite():
     suite = unittest.TestSuite()

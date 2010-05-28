@@ -44,6 +44,7 @@ test_requires = [
     'zope.i18n',
     'zope.password',
     'zope.testing',
+    'megrok.z3cform.layout',
     ]
 
 setup(name = name,
