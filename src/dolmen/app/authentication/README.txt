@@ -289,17 +289,15 @@ Setting up a site
   >>> len(PAU.credentialsPlugins)
   0
 
-
   >>> initialize_pau(PAU)
   >>> print PAU.authenticatorPlugins
   ('globalregistry',)
   >>> print PAU.credentialsPlugins
   ('cookies', 'No Challenge if Authenticated')
 
-  >>> from zope.site.site import LocalSiteManager
-  >>> lsm = LocalSiteManager(site)
-  >>> lsm.registerUtility(PAU, IAuthentication, '')
-
+  >>> site.auth = PAU
+  >>> lsm = site.getSiteManager()
+  >>> lsm.registerUtility(PAU, IAuthentication)
 
 
 Introspection
@@ -311,7 +309,7 @@ Imagine you go to a page that anonymous users don't have access to:
   >>> browser = Browser()
   >>> browser.handleErrors = False
 
-  >>> browser.open("http://localhost/site/edit")
+  >>> browser.open("http://localhost/site/@@edit")
 
 As you can see, the plug-in redirects you to the login page:
 
