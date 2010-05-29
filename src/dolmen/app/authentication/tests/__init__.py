@@ -1,12 +1,13 @@
 # Test package.
 
-import grok
-from dolmen.app.site import Dolmen
-from zope.authentication.interfaces import IAuthentication
-from zope.pluggableauth import PluggableAuthentication as PAU
-from dolmen.app.authentication import initialize_pau
+from dolmen.authentication import IPrincipal
+from zope.interface import implements
 
-
-class MySite(Dolmen):
-    grok.local_utility(PAU, IAuthentication, setup=initialize_pau,
-                       public=True, name_in_container="users")
+class User(object):
+    implements(IPrincipal)
+  
+    def __init__(self, id, title=u"", desc=u""):
+        self.id = id
+        self.title = title or id
+        self.description = desc
+        self.groups = []

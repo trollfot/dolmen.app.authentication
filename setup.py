@@ -12,7 +12,7 @@ install_requires=[
     'dolmen.app.layout',
     'dolmen.app.security',
     'dolmen.app.site',
-    'dolmen.authentication',
+    'dolmen.authentication >= 0.2',
     'dolmen.content',
     'dolmen.forms.base',
     'grok',
@@ -40,11 +40,14 @@ install_requires=[
     ]
 
 test_requires = [
-    'zope.app.wsgi',
-    'zope.i18n',
-    'zope.password',
-    'zope.testing',
+    'megrok.z3cform.base',
     'megrok.z3cform.layout',
+    'zope.app.appsetup',
+    'zope.app.publication',
+    'zope.app.wsgi',
+    'zope.browserpage',
+    'zope.i18n',
+    'zope.testing',
     ]
 
 setup(name = name,

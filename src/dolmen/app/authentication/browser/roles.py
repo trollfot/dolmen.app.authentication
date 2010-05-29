@@ -8,13 +8,13 @@ from zope.securitypolicy.settings import Allow
 from zope.site.hooks import getSite
 
 from dolmen.app import layout
-from dolmen.app.authentication import IUser
+from dolmen.app.authentication import IPrincipal
 from dolmen.app.authentication import permissions
 from dolmen.app.authentication import MF as _
 from dolmen.forms.base import Fields
 
 
-class IUserRoles(Interface):
+class IPrincipalRoles(Interface):
     """Defines a component allowing you to chose roles.
     """
     roles = schema.List(
@@ -22,46 +22,44 @@ class IUserRoles(Interface):
         required=True)
 
 
-class UserRoles(grok.Adapter):
+class PrincipalRoles(grok.Adapter):
     """Grant a role to a user.
     """
-    grok.context(IUser)
-    grok.implements(IUserRoles)
+    grok.context(IPrincipal)
+    grok.implements(IPrincipalRoles)
 
     def __init__(self, context):
-        self.context = context
         site = getSite()
+        self.userid = context.id
         self.manager = IPrincipalRoleManager(site)
-        self.setting = self.manager.getRolesForPrincipal(self.context.id)
 
     @apply
     def roles():
         """Writable property for roles.
         """
         def get(self):
-            return [role[0] for role in self.setting if role[1] is Allow]
+            setting = self.manager.getRolesForPrincipal(self.userid)
+            return [role[0] for role in setting if role[1] is Allow]
 
         def set(self, roles):
-            userid = self.context.id
-
             # removing undefined roles
-            for role in self.setting:
-                if role[0] not in roles:
-                    if role[1] is Allow:
-                        self.manager.unsetRoleForPrincipal(role[0], userid)
+            setting = self.manager.getRolesForPrincipal(self.userid)
+            for role in setting:
+                if role[0] not in roles and role[1] is Allow:
+                    self.manager.unsetRoleForPrincipal(role[0], self.userid)
 
             # setting new roles
             for role in roles:
-                self.manager.assignRoleToPrincipal(role, userid)
+                self.manager.assignRoleToPrincipal(role, self.userid)
 
         return property(get, set)
 
 
-class EditUserRoles(layout.Edit):
-    grok.context(IUser)
+class EditPrincipalRoles(layout.Edit):
+    grok.context(IPrincipal)
     grok.name('grant_role')
     grok.title(_(u"Grant role"))
     grok.require(permissions.ManageUsers)
 
-    form_name = _(u"Select user's roles")
-    fields = Fields(IUserRoles)
+    form_name = _(u"Select the principal's roles")
+    fields = Fields(IPrincipalRoles)

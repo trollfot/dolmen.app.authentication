@@ -10,6 +10,7 @@
 
   <include package="grok" />
   <include package="zope.container" />
+  <include package="zope.pluggableauth" />
   <include package="zope.principalregistry" />
   <include package="zope.publisher" />
   <include package="zope.site" />
@@ -38,9 +39,19 @@
       title="Unauthenticated User"
       />
 
+  <everybodyGroup
+      id="zope.Everybody"
+      title="All Users"
+      />
+
   <grant
       permission="zope.View"
       principal="zope.anybody"
+      />
+
+  <grant
+      permission="dolmen.content.View"
+      principal="zope.Everybody"
       />
 
   <principal

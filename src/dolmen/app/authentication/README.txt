@@ -2,7 +2,7 @@
 dolmen.app.authentication
 *************************
 
-``dolmen.app.authentication`` is the package responsible for the users
+``dolmen.app.authentication`` is the package responsible for the users and
 groups management in a Dolmen application. Built on the on the top of
 ``dolmen.authentication`` and ``zope.pluggableauth``, it provides a
 set of plugins and base classes that can help building a complex users
@@ -22,7 +22,7 @@ Credentials plugins
 
 Credentials plugins are responsible for the extraction of credentials,
 in order to identify a user. ``dolmen.app.authentication`` provides a
-single plugin, out of the box.
+single plugin, out of the box - Cookies Credentials.
 
 Cookies Credentials
 -------------------
@@ -30,10 +30,9 @@ Cookies Credentials
 The cookie credentials plugin extracts the credentials from cookies.
 This plugin is based on Philipp von Weitershausen's work
 (``wc.cookiecredentials``). It has been reimplemented to avoid the use
-of the ``zope.app`` packages and allow more flexibility in the
-changes, in the long run.
+of the ``zope.app`` packages and allow more flexibility in the long run.
 
-This plugin provides capabilities to::
+This plugin provides the following capabilities::
 
 - challenge the user to enter username and password through a login
   form and
@@ -72,7 +71,7 @@ Authenticator Plugins
 
 Authenticator plugins uses extracted credentials in order to retrieve
 and identify principals. ``dolmen.app.authentication`` provides two
-plugins.
+plugins - Global Registry Authentication & Principal Folder Authentication
 
 
 Global Registry Authentication
@@ -135,7 +134,7 @@ Principal Folder Authentication
 -------------------------------
 
 ``dolmen.app.authentication`` introduces another authenticator plugin
-meant to store and retrieve persistent principals. This plugin is
+meant to store and retrieve persistent principals. This plugin is a
 container that can store IPrincipal objects and retrieve them
 following the IAuthenticatorPlugin's prescriptions.
 
@@ -151,44 +150,49 @@ requirements::
   True
 
 In order to test this plugin, we have to create an IPrincipal object
-and to store inside the plugin. Then, we can test the look up.
+and store it inside the plugin. Then, we can test the look up.
 
 In order to make the authentication pluggable, the principal
 authenticator plugin relies on 3 interfaces: 
 
 - IAccountStatus : if an adaptation exist to this interface from the
   IPrincipal object, it is used to figure out if the principal can
-  login or not. It allows the possibility to disable a user account
-  and eventually to compute that disability.
+  login or not. It allows disabling a user account and computing that 
+  disability.
 
 - IPasswordChecker: this adapter is used to check the credentials. If
   it doesnt exist (or if the IPrincipal object doesn't provide this
   interface), the authentication is aborted and None is returned.
 
 - IPrincipalInfo: unlike the previous plugin, the Principal Folder
-  authenticator doesn't return directly a PrincipalInfo object but
+  authenticator doesn't directly return a PrincipalInfo object, but
   uses an adapter to retrieve the appropriate principal info
-  object. This is required in order to plug specific behavior to our
+  object. This is required in order to plug specific behavior into our
   authentication system.
 
 
 Let's first implement a basic IPrincipalObject. Once stored, we'll be
 able to start the look ups and the adapters implementations::
 
-  >>> from dolmen.authentication import IPrincipal
-  >>> from zope.interface import implements
+  >>> from dolmen.app.authentication.tests import User
 
-  >>> class User(object):
-  ...     implements(IPrincipal)
-  ...
-  ...     def __init__(self, id, title=u"", desc=u""):
-  ...         self.id = id
-  ...         self.title = title or id
-  ...         self.description = desc
-  ...         self.groups = []
+See the implementation below::
+
+  from dolmen.authentication import IPrincipal
+  from zope.interface import implements
+
+  class User(object):
+      implements(IPrincipal)
+
+      def __init__(self, id, title=u"", desc=u""):
+          self.id = id
+          self.title = title or id
+          self.description = desc
+          self.groups = []
 
 We can verify our implementation against the interface::
 
+  >>> from dolmen.authentication import IPrincipal
   >>> stilgar = User(u"stilgar")
   >>> verifyObject(IPrincipal, stilgar)
   True
@@ -295,13 +299,16 @@ Setting up a site
   >>> print PAU.credentialsPlugins
   ('cookies', 'No Challenge if Authenticated')
 
-  >>> site.auth = PAU
+  >>> site['auth'] = PAU
   >>> lsm = site.getSiteManager()
   >>> lsm.registerUtility(PAU, IAuthentication)
 
 
-Introspection
--------------
+Logging in
+==========
+
+UnAuthorized
+------------
 
 Imagine you go to a page that anonymous users don't have access to:
 
@@ -316,8 +323,8 @@ Imagine you go to a page that anonymous users don't have access to:
   True
 
 
-Logging in
-==========
+The login page
+--------------
 
   >>> browser.open('http://localhost/site/@@login')
   >>> loginpage = browser.contents
@@ -337,6 +344,143 @@ Logging in
   >>> "<h1>Edit: My Dolmen Site</h1>\n" in browser.contents
   True
 
+
+Managing the authentication plugins
+====================================
+
+``dolmen.app.authentication`` provides a way to enable and disable the
+different authentication plugins.
+
+In order to keep the elements tidied up, in the site,
+``dolmen.app.authentication`` assumes that the authenticator plugins
+are persisted inside the PAU container.
+
+Let's have a concrete exemple with a PrincipalFolder plugin::
+
+  >>> members = plugins.PrincipalFolderPlugin()
+  >>> grok.notify(grok.ObjectCreatedEvent(members))
+  >>> PAU['members'] = members
+
+At this point, the PrincipalFolder is created and persisted. As we
+notice, the folder is created inside the PAU utility container.
+
+At this point, we can access the management view::
+
+  >>> browser.open("http://localhost/site/auth/@@authenticators")
+  >>> print browser.contents
+  <!DOCTYPE html PUBLIC...
+  <select id="form-widgets-activeFolders-from"
+          name="form.widgets.activeFolders.from"
+          class="required tuple-field"
+          multiple="multiple" size="5">
+       <option value="members">members (members)</option>
+  </select>
+  ...
+  <select id="form-widgets-activeFolders-to"
+          name="form.widgets.activeFolders.to"
+          class="required tuple-field"
+          multiple="multiple" size="5">
+  </select>
+  ...
+
+The "members" principal folder is not yet activated.
+
+Let's create a User object inside it::
+
+  >>> chani = User(u"chani", title=u"Sihaya")
+  >>> PAU['members']['chani'] = chani
+
+Now, with a new browser, let's try to login::
+
+  >>> new_browser = Browser()
+  >>> new_browser.open('http://localhost/site/@@login')
+  >>> new_browser.getControl('Username').value = 'chani'
+  >>> new_browser.getControl('Password').value = 'boo'
+  >>> new_browser.getControl('Log in').click()
+
+  >>> "Login failed" in new_browser.contents
+  True
+
+Using the management view mechanisms, we can activate our principal
+folder::
+
+  >>> from dolmen.app.authentication.browser import management
+  >>> adapter = management.IActiveFolders(PAU)
+  >>> adapter.activeFolders
+  ()
+  >>> adapter.activeFolders = (u'members',)
+
+The principal folder is now activated. Let's retry to log in::
+
+  >>> new_browser = Browser()
+  >>> new_browser.handleErrors = False
+
+  >>> new_browser.open('http://localhost/site/@@login')
+  >>> new_browser.getControl('Username').value = 'chani'
+  >>> new_browser.getControl('Password').value = 'boo'
+  >>> new_browser.getControl('Log in').click()
+
+  >>> "Login failed" in new_browser.contents
+  False
+
+  >>> print new_browser.url
+  http://localhost/site
+
+
+Managing the users
+==================
+
+Users can be granted roles. This can be done through a view, with the
+user as the context::
+
+  >>> browser.open("http://localhost/site/auth/members/chani/@@grant_role")
+  >>> print browser.contents
+  <!DOCTYPE html PUBLIC...
+  ...<h1>Edit: Sihaya</h1>...
+  <select id="form-widgets-roles-from"
+          name="form.widgets.roles.from"
+          class="required list-field"
+          multiple="multiple" size="5">
+     <option value="dolmen.Contributor">dolmen.Contributor</option>
+     <option value="dolmen.Member">dolmen.Member</option>
+     <option value="dolmen.Owner">dolmen.Owner</option>
+     <option value="dolmen.Reviewer">dolmen.Reviewer</option>
+  </select>
+  ...
+  <select id="form-widgets-roles-to"
+          name="form.widgets.roles.to"
+          class="required list-field"
+          multiple="multiple" size="5">
+  </select>
+  ...
+
+This view is possible thanks to an adapter, useable on any
+IPrincipals::
+
+  >>> from zope.component.hooks import setSite
+  >>> setSite(site) # we got to the context of our site
+
+  >>> from dolmen.app.authentication.browser import roles
+  >>> role_controller = roles.IPrincipalRoles(chani)
+  >>> role_controller.roles
+  []
+
+  >>> role_controller.roles = ['dolmen.Member']
+  >>> role_controller.roles
+  ['dolmen.Member']
+
+The role management applies the changes on the site object
+itself. Let's verify if the role has been correctly applied::
+
+  >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
+  >>> prm = IPrincipalRoleManager(site)
+  >>> print prm.getRolesForPrincipal(chani.id)
+  [('dolmen.Member', PermissionSetting: Allow)]
+
+
+Logging out
+===========
+
 We can also manually destroy the cookie by invoking the logout page:
 
   >>> print browser.cookies.keys()
@@ -344,3 +488,6 @@ We can also manually destroy the cookie by invoking the logout page:
   >>> browser.open("http://localhost/site/@@logoutaction")
   >>> print browser.cookies.keys()
   []
+
+  >>> browser.url
+  'http://localhost/site/logout.html'
