@@ -3,7 +3,8 @@
 from Philipp von Weitershausen.
 """
 
-import base64, urllib
+import base64
+import urllib
 import grokcore.component as grok
 from dolmen.app.authentication import MF as _
 from zope.interface import Interface

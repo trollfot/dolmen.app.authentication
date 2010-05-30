@@ -12,7 +12,6 @@
   <include package="zope.pluggableauth" />
   <include package="zope.securitypolicy" />
 
-
   <browser:defaultView
       for="zope.authentication.interfaces.IAuthentication"
       name="index"

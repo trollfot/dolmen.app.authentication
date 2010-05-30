@@ -23,7 +23,7 @@ class IPrincipalRoles(Interface):
 
 
 class PrincipalRoles(grok.Adapter):
-    """Grant a role to a user.
+    """Grant a role to a principal.
     """
     grok.context(IPrincipal)
     grok.implements(IPrincipalRoles)
@@ -57,8 +57,8 @@ class PrincipalRoles(grok.Adapter):
 
 class EditPrincipalRoles(layout.Edit):
     grok.context(IPrincipal)
-    grok.name('grant_role')
-    grok.title(_(u"Grant role"))
+    grok.name('grant_roles')
+    grok.title(_(u"Grant roles"))
     grok.require(permissions.ManageUsers)
 
     form_name = _(u"Select the principal's roles")

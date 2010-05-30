@@ -3,21 +3,16 @@
 
 import grok
 
-from dolmen.app.authentication import ManageUsers
+from dolmen.app.authentication import ManageUsers, MF as _
 from dolmen.app.layout import Index, Page, ContextualMenuEntry, Edit
 from dolmen.authentication import IPrincipalFolder
 from dolmen.forms.base import Fields
-from grok.interfaces import IApplication
 
 from zope.authentication.interfaces import IAuthentication
-from zope.component import getUtility
 from zope.interface import Interface
-from zope.location import LocationProxy
-from zope.publisher.interfaces.http import IHTTPRequest
-from zope.schema import Tuple, Choice, ASCIILine
+from zope.schema import Tuple, Choice
 from zope.schema.interfaces import IVocabularyFactory, ISource
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope.traversing.interfaces import ITraversable
 
 
 class PrincipalFoldersList(grok.GlobalUtility):
@@ -34,9 +29,9 @@ class PrincipalFoldersList(grok.GlobalUtility):
 
 class IActiveFolders(Interface):
     """Principal folders management.
-    """   
+    """
     activeFolders = Tuple(
-        title=u"Active user folders",
+        title=_(u"Active authentication sources"),
         value_type=Choice(vocabulary='dolmen.PAUPrincipalFolders'),
         default=tuple())
 
@@ -60,7 +55,7 @@ class ActiveFoldersChoice(grok.Adapter):
             folders = set(
                 (p.__name__ for p in self.context.values()
                  if IPrincipalFolder.providedBy(p)))
-            
+
             self.context.authenticatorPlugins = (
                 tuple(auths.difference(folders)) + values)
 
@@ -72,11 +67,11 @@ class ManageAuth(Index):
     grok.require(ManageUsers)
 
 
-class PrincipalFolders(Page, ContextualMenuEntry):
-    grok.title("User folders")
+class AuthSources(Page, ContextualMenuEntry):
+    grok.title(_("Authentication sources"))
     grok.context(IAuthentication)
     grok.require(ManageUsers)
-    
+
     def update(self):
         self.folders = self.context.authenticatorPlugins
         self.credentials = self.context.credentialsPlugins
@@ -86,6 +81,6 @@ class PAUPreferences(Edit):
     grok.name('authenticators')
     grok.context(IAuthentication)
     grok.require(ManageUsers)
-    
+
     fields = Fields(IActiveFolders)
-    label = u"Manage your authentication sources"
+    label = _(u"Edit the authentication sources")

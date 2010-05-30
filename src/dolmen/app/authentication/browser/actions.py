@@ -3,18 +3,18 @@
 import grok
 import megrok.menu
 
-from zope.interface import Interface
+from dolmen.app.authentication import permissions, MF as _
 from dolmen.app.layout import master, MenuViewlet
-from dolmen.app.authentication import permissions
 from dolmen.app.security.content import CanViewContent
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.interface import Interface
 
 grok.context(Interface)
 
 
 class AnonymousActionsMenu(megrok.menu.Menu):
     megrok.menu.name(u'anonymous-actions')
-    megrok.menu.title(u'Anonymous actions bar')
+    megrok.menu.title(_(u'Public actions'))
 
 
 class AnonymousMenuEntry(object):
@@ -25,9 +25,9 @@ class AnonymousMenuEntry(object):
 
 class UserActionsMenu(megrok.menu.Menu):
     megrok.menu.name(u'user-actions')
-    megrok.menu.title(u'User actions bar')
+    megrok.menu.title(_(u'User actions'))
 
- 
+
 class UserMenuEntry(object):
     grok.baseclass()
     grok.context(Interface)

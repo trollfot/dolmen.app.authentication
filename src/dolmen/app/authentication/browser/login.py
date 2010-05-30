@@ -6,14 +6,13 @@ import zope.interface
 import grokcore.view as grok
 
 from zope.event import notify
-from zope.component import getUtility
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.location.interfaces import ILocation
 
 from dolmen.app.layout import Form
 from dolmen.forms.base import Fields, button
-from dolmen.authentication import UserLoginEvent, IPrincipalFolder
+from dolmen.authentication import UserLoginEvent
 from dolmen.app.authentication import MF as _
 from dolmen.app.authentication.browser import AnonymousMenuEntry
 
@@ -22,12 +21,12 @@ class ILoginForm(zope.interface.Interface):
     """A simple login form interface.
     """
     login = zope.schema.TextLine(
-        title = _(u"Username"),
-        )
-    
+        title=_(u"Username"),
+        required=True)
+
     password = zope.schema.Password(
-        title = _(u"Password"),
-        )
+        title=_(u"Password"),
+        required=True)
 
 
 class Login(Form, AnonymousMenuEntry):

@@ -3,8 +3,7 @@
 import grok
 
 from zope.event import notify
-from zope.traversing.browser import AbsoluteURL
-from zope.component import getMultiAdapter, getUtility
+from zope.component import getUtility
 from zope.authentication.interfaces import (
     IUnauthenticatedPrincipal, IAuthentication, ILogout)
 

@@ -433,7 +433,7 @@ Managing the users
 Users can be granted roles. This can be done through a view, with the
 user as the context::
 
-  >>> browser.open("http://localhost/site/auth/members/chani/@@grant_role")
+  >>> browser.open("http://localhost/site/auth/members/chani/@@grant_roles")
   >>> print browser.contents
   <!DOCTYPE html PUBLIC...
   ...<h1>Edit: Sihaya</h1>...
