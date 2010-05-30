@@ -32,10 +32,10 @@ This plugin is based on Philipp von Weitershausen's work
 (``wc.cookiecredentials``). It has been reimplemented to avoid the use
 of the ``zope.app`` packages and allow more flexibility in the long run.
 
-This plugin provides the following capabilities::
+This plugin provides the following capabilities:
 
 - challenge the user to enter username and password through a login
-  form and
+  form;
 
 - save those credentials to a cookie from which it can read them back
   at any later time.
@@ -82,12 +82,12 @@ package provides a global registry that is not persistent and
 re-constructed at each startup. The Global Registry Authenticator is
 meant to look up the principal inside that global registry.
 
+We verify the integrity of our implementation against the
+requirements::
+
   >>> from dolmen.app.authentication import plugins
   >>> IAuthenticatorPlugin.implementedBy(plugins.GlobalRegistryAuth)
   True
-
-We verify the integrity of our implementation against the
-requirements::
 
   >>> plugin = plugins.GlobalRegistryAuth()
   >>> verifyObject(IAuthenticatorPlugin, plugin)
@@ -114,7 +114,7 @@ Wrong credentials will make the authentication return None::
    True
 
 It is possible to get the principal info alone, as required by the
-IAuthenticatorPlugin interface:
+IAuthenticatorPlugin interface::
 
    >>> print plugin.principalInfo('zope.mgr')
    PrincipalInfo(u'zope.mgr')
@@ -138,12 +138,12 @@ meant to store and retrieve persistent principals. This plugin is a
 container that can store IPrincipal objects and retrieve them
 following the IAuthenticatorPlugin's prescriptions.
 
+We verify the integrity of our implementation against the
+requirements::
+
   >>> from dolmen.app.authentication import plugins
   >>> IAuthenticatorPlugin.implementedBy(plugins.PrincipalFolderPlugin)
   True
-
-We verify the integrity of our implementation against the
-requirements::
 
   >>> plugin = plugins.PrincipalFolderPlugin()
   >>> verifyObject(IAuthenticatorPlugin, plugin)
@@ -276,6 +276,10 @@ In this example, we explictly disallow the user with the identifier
 Setting up a site
 =================
 
+In order to test the advanced features of the package, we'll set up a
+familiar environment. Doing so, we can test the behavior of our
+package in the context of a real Dolmen site::
+
   >>> from dolmen.app.site import Dolmen
   >>> root = getRootFolder()
 
@@ -310,7 +314,7 @@ Logging in
 UnAuthorized
 ------------
 
-Imagine you go to a page that anonymous users don't have access to:
+Imagine you go to a page that anonymous users don't have access to::
 
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
@@ -325,6 +329,9 @@ Imagine you go to a page that anonymous users don't have access to:
 
 The login page
 --------------
+
+To get the right credentials, we can simply log in, using the login
+form provided by ``dolmen.app.authentication``::
 
   >>> browser.open('http://localhost/site/@@login')
   >>> loginpage = browser.contents
@@ -481,7 +488,7 @@ itself. Let's verify if the role has been correctly applied::
 Logging out
 ===========
 
-We can also manually destroy the cookie by invoking the logout page:
+We can also manually destroy the cookie by invoking the logout page::
 
   >>> print browser.cookies.keys()
   ['dolmen.authcookie']
