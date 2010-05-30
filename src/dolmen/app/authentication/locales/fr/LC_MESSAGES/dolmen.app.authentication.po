@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: dolmen_authentication\n"
+"Project-Id-Version: dolmen.app.authentication\n"
 "POT-Creation-Date: 2010-05-06 16:08+0100\n"
 "PO-Revision-Date: 2010-05-05 16:08+0100\n"
 "Last-Translator: Souheil CHELFOUH <souheil@chelfouh.com>\n"
@@ -49,8 +49,17 @@ msgid  "You are now logged in as ${name}"
 msgstr "Vous êtes désormais authentifié en tant que ${name}"
 
 # dolmen/app/authentication/browser/management.py - line 39
+# dolmen/app/authentication/browser/management_templates/authsources.pt
 msgid  "Active authentication sources"
 msgstr "Sources d'authentification actives"
+
+# dolmen/app/authentication/browser/management_templates/authsources.pt
+msgid  "Active credentials sources"
+msgstr "Sources d'accréditation actives"
+
+# dolmen/app/authentication/browser/management_templates/authsources.pt
+msgid  "Authentication management: sources"
+msgstr "Gestion de l'authentification: sources"
 
 # dolmen/app/authentication/browser/management.py - line 76
 msgid  "Authentication sources"
