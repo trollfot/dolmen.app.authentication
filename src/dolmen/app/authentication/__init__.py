@@ -11,8 +11,7 @@ from zope.security.interfaces import IPrincipal
 from dolmen.app.authentication import plugins
 from dolmen.app.authentication.interfaces import IUser, IChangePassword
 from dolmen.app.authentication.browser.validation import UserRegistrationError
-from dolmen.app.authentication.permissions import (
-    CanLogin, CanLogout, AddUsers, ManageUsers)
+from dolmen.app.authentication.permissions import AddUsers, ManageUsers
 
 
 def initialize_pau(PAU):

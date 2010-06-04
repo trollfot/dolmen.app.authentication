@@ -321,9 +321,9 @@ Imagine you go to a page that anonymous users don't have access to::
 
   >>> browser.open("http://localhost/site/@@edit")
   >>> unauthorized = browser.contents
-  >>> 'input id="login" name="login"' in unauthorized
+  >>> 'id="login" name="login"' in unauthorized
   True
-  >>> 'input id="password" name="password"' in unauthorized
+  >>> 'id="password" name="password"' in unauthorized
   True
 
 
@@ -335,9 +335,9 @@ form provided by ``dolmen.app.authentication``::
 
   >>> browser.open('http://localhost/site/@@login')
   >>> loginpage = browser.contents
-  >>> 'input id="login" name="login"' in loginpage
+  >>> 'id="login" name="login"' in loginpage
   True
-  >>> 'input id="password" name="password"' in loginpage
+  >>> 'id="password" name="password"' in loginpage
   True
 
   >>> browser.getControl('Username').value = 'mgr'
@@ -376,19 +376,15 @@ At this point, we can access the management view::
   >>> browser.open("http://localhost/site/auth/@@authenticators")
   >>> print browser.contents
   <!DOCTYPE html PUBLIC...
-  <select id="form-widgets-activeFolders-from"
-          name="form.widgets.activeFolders.from"
-          class="required tuple-field"
-          multiple="multiple" size="5">
-       <option value="members">members (members)</option>
-  </select>
-  ...
-  <select id="form-widgets-activeFolders-to"
-          name="form.widgets.activeFolders.to"
-          class="required tuple-field"
-          multiple="multiple" size="5">
-  </select>
-  ...
+  <div class="fields">
+    <div class="field">
+      <label class="field-label"
+             for="form-field-activeFolders">Active authentication sources</label>
+      ...
+      <input type="checkbox" id="form-field-activeFolders-members" name="form.field.activeFolders" value="members" class="field-tuple" />
+      <label for="form-field-activeFolders-members">members (members)</label>
+      <br />
+      ...
 
 The "members" principal folder is not yet activated.
 
@@ -444,21 +440,22 @@ user as the context::
   >>> print browser.contents
   <!DOCTYPE html PUBLIC...
   ...<h1>Edit: Sihaya</h1>...
-  <select id="form-widgets-roles-from"
-          name="form.widgets.roles.from"
-          class="required list-field"
-          multiple="multiple" size="5">
-     <option value="dolmen.Contributor">dolmen.Contributor</option>
-     <option value="dolmen.Member">dolmen.Member</option>
-     <option value="dolmen.Owner">dolmen.Owner</option>
-     <option value="dolmen.Reviewer">dolmen.Reviewer</option>
-  </select>
+  <div class="fields">
+    <div class="field">
+      <label class="field-label" for="form-field-roles">roles</label>
   ...
-  <select id="form-widgets-roles-to"
-          name="form.widgets.roles.to"
-          class="required list-field"
-          multiple="multiple" size="5">
-  </select>
+      <input type="checkbox" id="form-field-roles-dolmen-Contributor" name="form.field.roles" value="dolmen.Contributor" class="field-list" />
+        <label for="form-field-roles-dolmen-Contributor">dolmen.Contributor</label>
+        <br />
+       <input type="checkbox" id="form-field-roles-dolmen-Member" name="form.field.roles" value="dolmen.Member" class="field-list" />
+        <label for="form-field-roles-dolmen-Member">dolmen.Member</label>
+        <br />
+       <input type="checkbox" id="form-field-roles-dolmen-Owner" name="form.field.roles" value="dolmen.Owner" class="field-list" />
+        <label for="form-field-roles-dolmen-Owner">dolmen.Owner</label>
+        <br />
+       <input type="checkbox" id="form-field-roles-dolmen-Reviewer" name="form.field.roles" value="dolmen.Reviewer" class="field-list" />
+        <label for="form-field-roles-dolmen-Reviewer">dolmen.Reviewer</label>
+        <br />
   ...
 
 This view is possible thanks to an adapter, useable on any
@@ -490,11 +487,12 @@ Logging out
 
 We can also manually destroy the cookie by invoking the logout page::
 
-  >>> print browser.cookies.keys()
-  ['dolmen.authcookie']
+  >>> 'dolmen.authcookie' in browser.cookies.keys()
+  True
+
   >>> browser.open("http://localhost/site/@@logoutaction")
-  >>> print browser.cookies.keys()
-  []
+  >>> 'dolmen.authcookie' in browser.cookies.keys()
+  False
 
   >>> browser.url
   'http://localhost/site/logout.html'

@@ -1,14 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import grok
-
-
-class CanLogin(grok.Permission):
-    grok.name('dolmen.user.CanLogin')
-    grok.title('dolmen: anonymous can login')
-
-
-class CanLogout(grok.Permission):
-    grok.name('dolmen.user.CanLogout')
-    grok.title('dolmen: user can logout')
 
 
 class AddUsers(grok.Permission):

@@ -18,9 +18,10 @@ install_requires=[
     'grok',
     'grokcore.component',
     'grokcore.view',
-    'megrok.menu',
+    'dolmen.menu',
     'setuptools',
     'z3c.schema',
+    'zeam.form.base >= 1.0b3',
     'zope.authentication',
     'zope.component',
     'zope.container',
@@ -40,8 +41,6 @@ install_requires=[
     ]
 
 test_requires = [
-    'megrok.z3cform.base',
-    'megrok.z3cform.layout',
     'zope.app.appsetup',
     'zope.app.publication',
     'zope.app.wsgi',

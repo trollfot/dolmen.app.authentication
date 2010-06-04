@@ -1,10 +1,12 @@
+
 # -*- coding: utf-8 -*-
 
 import grok
-import megrok.menu
+from dolmen import menu
 
 from dolmen.app.authentication import permissions, MF as _
 from dolmen.app.layout import master, MenuViewlet
+from dolmen.app.layout.viewlets import ContextualActions
 from dolmen.app.security.content import CanViewContent
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.interface import Interface
@@ -12,36 +14,30 @@ from zope.interface import Interface
 grok.context(Interface)
 
 
-class AnonymousActionsMenu(megrok.menu.Menu):
-    megrok.menu.name(u'anonymous-actions')
-    megrok.menu.title(_(u'Public actions'))
-
-
-class AnonymousMenuEntry(object):
-    grok.baseclass()
-    megrok.menu.menuitem(AnonymousActionsMenu)
-    grok.require(permissions.CanLogin)
-
-
-class UserActionsMenu(megrok.menu.Menu):
-    megrok.menu.name(u'user-actions')
-    megrok.menu.title(_(u'User actions'))
-
-
-class UserMenuEntry(object):
-    grok.baseclass()
+class AnonymousActionsMenu(menu.Menu):
     grok.context(Interface)
-    megrok.menu.menuitem(UserActionsMenu)
+    grok.name('anonymous-actions')
+    grok.title(_(u'Public actions'))
 
 
-class ActionBarViewlet(MenuViewlet):
+class UserActionsMenu(menu.Menu):
+    grok.context(Interface)
+    grok.name(u'user-actions')
+    grok.title(_(u'User actions'))
+
+
+class ActionBarViewlet(ContextualActions):
     grok.order(20)
     grok.name('dolmen.actionbar')
     grok.require(CanViewContent)
     grok.viewletmanager(master.Top)
 
     @property
-    def menu_name(self):
+    def menu_factory(self):
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            return "anonymous-actions"
-        return "user-actions"
+            return AnonymousActionsMenu
+        return UserActionsMenu
+
+    def update(self):
+        MenuViewlet.update(self)
+        self.actions = self.compute_actions(self.menu.viewlets)

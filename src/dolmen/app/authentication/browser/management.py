@@ -3,21 +3,23 @@
 
 import grok
 
+from dolmen import menu
 from dolmen.app.authentication import ManageUsers, MF as _
-from dolmen.app.layout import Index, Page, ContextualMenuEntry, Edit
+from dolmen.app.layout import Index, Page, ContextualMenu, Edit
 from dolmen.authentication import IPrincipalFolder
 from dolmen.forms.base import Fields
 
 from zope.authentication.interfaces import IAuthentication
 from zope.interface import Interface
 from zope.schema import Tuple, Choice
-from zope.schema.interfaces import IVocabularyFactory, ISource
+from zope.schema.interfaces import (
+    IVocabularyFactory, ISource, IVocabularyTokenized)
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 
 class PrincipalFoldersList(grok.GlobalUtility):
     grok.name('dolmen.PAUPrincipalFolders')
-    grok.implements(ISource)
+    grok.implements(ISource, IVocabularyFactory)
     grok.provides(IVocabularyFactory)
 
     def __call__(self, pau):
@@ -67,7 +69,8 @@ class ManageAuth(Index):
     grok.require(ManageUsers)
 
 
-class AuthSources(Page, ContextualMenuEntry):
+@menu.menuentry(ContextualMenu, order=30)
+class AuthSources(Page):
     grok.title(_("Authentication sources"))
     grok.context(IAuthentication)
     grok.require(ManageUsers)
@@ -77,6 +80,7 @@ class AuthSources(Page, ContextualMenuEntry):
         self.credentials = self.context.credentialsPlugins
 
 
+@menu.menuentry(ContextualMenu, order=20)
 class PAUPreferences(Edit):
     grok.name('authenticators')
     grok.context(IAuthentication)

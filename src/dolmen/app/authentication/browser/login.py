@@ -5,16 +5,19 @@ import zope.schema
 import zope.interface
 import grokcore.view as grok
 
+from zeam.form.base import action
+from zeam.form.base.markers import SUCCESS, FAILURE
 from zope.event import notify
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.location.interfaces import ILocation
 
+from dolmen import menu
 from dolmen.app.layout import Form
-from dolmen.forms.base import Fields, button
+from dolmen.forms.base import Fields, Action
 from dolmen.authentication import UserLoginEvent
 from dolmen.app.authentication import MF as _
-from dolmen.app.authentication.browser import AnonymousMenuEntry
+from dolmen.app.authentication.browser import AnonymousActionsMenu
 
 
 class ILoginForm(zope.interface.Interface):
@@ -29,7 +32,8 @@ class ILoginForm(zope.interface.Interface):
         required=True)
 
 
-class Login(Form, AnonymousMenuEntry):
+@menu.menuentry(AnonymousActionsMenu)
+class Login(Form):
     """A very basic implementation of a login form.
     """
     grok.title(_(u"Log in"))
@@ -39,26 +43,34 @@ class Login(Form, AnonymousMenuEntry):
     prefix = ""
     label = _(u"Identify yourself")
     form_name = _(u"Login form")
-    fields = Fields(ILoginForm)
 
-    def updateWidgets(self):
-        Form.updateWidgets(self)
-        self.widgets.prefix = ''
-        self.widgets.update()
+    @property
+    def fields(self):
+        fields = Fields(ILoginForm)
+        for field in fields:
+            field.prefix = u""
+        return fields
 
-    @button.buttonAndHandler(_('Log in'), name='login')
-    def login(self, data):
+    @action(_('Log in'))
+    def login(self):
+        data, errors = self.extractData()
+        if errors:
+            return FAILURE
+        
         principal = self.request.principal
         if IUnauthenticatedPrincipal.providedBy(principal):
             self.status = _(u"Login failed")
-        else:
-            self.flash(_('You are now logged in as ${name}',
-                         mapping={"name": principal.id}))
-            notify(UserLoginEvent(principal))
-            camefrom = self.request.get('camefrom', None)
-            if not camefrom:
-                if ILocation.providedBy(principal):
-                    camefrom = absoluteURL(principal, self.request)
-                else:
-                    camefrom = absoluteURL(self.context, self.request)
-            self.redirect(camefrom)
+            return FAILURE
+ 
+        self.flash(_('You are now logged in as ${name}',
+                     mapping={"name": principal.id}))
+        notify(UserLoginEvent(principal))
+        camefrom = self.request.get('camefrom', None)
+        if not camefrom:
+            if ILocation.providedBy(principal):
+                camefrom = absoluteURL(principal, self.request)
+            else:
+                camefrom = absoluteURL(self.context, self.request)
+                self.redirect(camefrom)
+
+        return SUCCESS
