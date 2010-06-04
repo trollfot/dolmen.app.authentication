@@ -14,7 +14,7 @@ from zope.location.interfaces import ILocation
 
 from dolmen import menu
 from dolmen.app.layout import Form
-from dolmen.forms.base import Fields, Action
+from dolmen.forms.base import Fields
 from dolmen.authentication import UserLoginEvent
 from dolmen.app.authentication import MF as _
 from dolmen.app.authentication.browser import AnonymousActionsMenu

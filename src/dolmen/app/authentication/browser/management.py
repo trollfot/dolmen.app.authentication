@@ -12,8 +12,7 @@ from dolmen.forms.base import Fields
 from zope.authentication.interfaces import IAuthentication
 from zope.interface import Interface
 from zope.schema import Tuple, Choice
-from zope.schema.interfaces import (
-    IVocabularyFactory, ISource, IVocabularyTokenized)
+from zope.schema.interfaces import IVocabularyFactory, ISource
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 

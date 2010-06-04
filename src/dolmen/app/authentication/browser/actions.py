@@ -4,7 +4,7 @@
 import grok
 from dolmen import menu
 
-from dolmen.app.authentication import permissions, MF as _
+from dolmen.app.authentication import MF as _
 from dolmen.app.layout import master, MenuViewlet
 from dolmen.app.layout.viewlets import ContextualActions
 from dolmen.app.security.content import CanViewContent
