@@ -71,6 +71,6 @@ class Login(Form):
                 camefrom = absoluteURL(principal, self.request)
             else:
                 camefrom = absoluteURL(self.context, self.request)
-                self.redirect(camefrom)
 
+        self.redirect(camefrom)
         return SUCCESS

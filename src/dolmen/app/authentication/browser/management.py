@@ -8,6 +8,7 @@ from dolmen.app.authentication import ManageUsers, MF as _
 from dolmen.app.layout import Index, Page, ContextualMenu, Edit
 from dolmen.authentication import IPrincipalFolder
 from dolmen.forms.base import Fields
+from zeam.form.base.datamanager import makeAdaptiveDataManager
 
 from zope.authentication.interfaces import IAuthentication
 from zope.interface import Interface
@@ -63,12 +64,13 @@ class ActiveFoldersChoice(grok.Adapter):
         return property(fget, fset)
 
 
+@menu.menuentry(ContextualMenu, order=10)
 class ManageAuth(Index):
     grok.context(IAuthentication)
     grok.require(ManageUsers)
 
 
-@menu.menuentry(ContextualMenu, order=30)
+@menu.menuentry(ContextualMenu, order=15)
 class AuthSources(Page):
     grok.title(_("Authentication sources"))
     grok.context(IAuthentication)
@@ -86,4 +88,5 @@ class PAUPreferences(Edit):
     grok.require(ManageUsers)
 
     fields = Fields(IActiveFolders)
+    dataManager = makeAdaptiveDataManager(IActiveFolders)
     label = _(u"Edit the authentication sources")
