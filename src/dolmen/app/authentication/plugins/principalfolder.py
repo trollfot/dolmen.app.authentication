@@ -4,7 +4,6 @@ import grokcore.component as grok
 from dolmen.content import Container
 from dolmen.authentication import (
     IPrincipalFolder, IPasswordChecker, IAccountStatus)
-from zope.authentication.interfaces import PrincipalLookupError
 from zope.pluggableauth.interfaces import IAuthenticatorPlugin, IPrincipalInfo
 
 
@@ -62,4 +61,4 @@ class PrincipalFolderPlugin(Container):
         account = self.getAccount(id)
         if account is not None:
             return IPrincipalInfo(account)
-        raise PrincipalLookupError(id)
+        return None

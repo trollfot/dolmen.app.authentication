@@ -235,13 +235,22 @@ principal::
   ...            {'login': 'stilgar', 'password': 'boo'})
   >>> found is not None
   True
-  
+
+
 Of course, providing a wrong password will return None::
 
   >>> found = plugin.authenticateCredentials(
   ...            {'login': 'stilgar', 'password': 'not boo'})
   >>> found is None
   True
+
+We can also lookup the principal with its id::
+
+  >>> print plugin.principalInfo('stilgar')
+  <dolmen.authentication.principal.LocatablePrincipalInfo ...>
+
+  >>> print plugin.principalInfo("unknown")
+  None
 
 As seen previously, it is possible to switch on and off the ability to
 log in, for a given user, thanks to the IAccountStatus interface::

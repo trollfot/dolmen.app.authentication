@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from os.path import join
 
 name = 'dolmen.app.authentication'
-version = '1.0a1'
+version = '1.0a2'
 readme = open(
     join('src', 'dolmen', 'app', 'authentication', 'README.txt')).read()
 history = open(
@@ -43,7 +43,7 @@ install_requires=[
 test_requires = [
     'zope.app.appsetup',
     'zope.app.publication',
-    'zope.app.wsgi',
+    'zope.app.wsgi >= 3.9.2',
     'zope.browserpage',
     'zope.i18n',
     'zope.testing',
