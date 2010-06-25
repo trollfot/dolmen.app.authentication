@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.0a3 (2010-06-25)
+------------------
+
+ - The GlobalRegistry plugin no longer raises an error when a principalInfo
+   is not Found. Instead, it returns None, as specified by IAuthentication.
+   Tests have been added to fix that behavior and the PrincipalFolder's one.
+
+
 1.0a2 (2010-06-25)
 ------------------
 
