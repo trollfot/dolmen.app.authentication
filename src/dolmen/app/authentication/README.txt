@@ -120,10 +120,7 @@ IAuthenticatorPlugin interface::
    PrincipalInfo(u'zope.mgr')
 
    >>> print plugin.principalInfo('zorglub')
-   Traceback (most recent call last):
-   ...   
-   PrincipalLookupError: zorglub
-
+   None
 
 Note that the principal info is retrieved using its id and not its
 login. The id is unique and prefixed by the registry's own prefix, to

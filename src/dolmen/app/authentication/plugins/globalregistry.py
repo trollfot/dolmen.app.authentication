@@ -3,6 +3,7 @@
 import grokcore.component as grok
 from zope.pluggableauth.factories import PrincipalInfo
 from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.authentication.interfaces import PrincipalLookupError
 from zope.principalregistry.principalregistry import principalRegistry
 
 
@@ -40,9 +41,13 @@ class GlobalRegistryAuth(grok.GlobalUtility):
         return
 
     def principalInfo(self, id):
-        principal = principalRegistry.getPrincipal(id)
-        if principal is not None:
-            return PrincipalInfo(unicode(principal.id),
-                                 principal.getLogin(),
-                                 principal.title,
-                                 principal.description)
+        try:
+            principal = principalRegistry.getPrincipal(id)
+            if principal is not None:
+                return PrincipalInfo(unicode(principal.id),
+                                     principal.getLogin(),
+                                     principal.title,
+                                     principal.description)
+        except PrincipalLookupError:
+            pass
+        return None
