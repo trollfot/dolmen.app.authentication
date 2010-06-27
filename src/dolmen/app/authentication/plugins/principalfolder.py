@@ -21,7 +21,7 @@ class PrincipalFolderPlugin(Container):
         return self.getPrincipal(id)
 
     def getValidPrincipal(self, login, passwd):
-        """Retrives a principal account and returns a IPrincipalInfo object.
+        """Retrieves a principal account and returns a IPrincipalInfo object.
         If no user matches the login or if the password check doesn't work,
         None is returned instead.
         """
