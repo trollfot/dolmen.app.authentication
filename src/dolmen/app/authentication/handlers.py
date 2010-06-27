@@ -10,6 +10,9 @@ from zope.authentication.interfaces import IAuthenticatedGroup, IEveryoneGroup
 
 @grok.subscribe(IPrincipalCreated)
 def GrantSpecialGroupsMembership(event):
+    """Set group information when a principal is created
+    (Code copied from zope.app.authentication.groupfolder.specialGroups)
+    """
     principal = event.principal
     if (IGroup.providedBy(principal) or
         not IGroupAwarePrincipal.providedBy(principal)):
