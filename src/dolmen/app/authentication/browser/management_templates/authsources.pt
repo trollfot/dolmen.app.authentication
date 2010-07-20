@@ -19,7 +19,7 @@
     </h3>
     <ul>
       <li tal:repeat="cred view/credentials">
-	<span tal:content="cred" />
+	<span i18n:translate="" tal:content="cred" />
       </li>
     </ul>
   </div>
