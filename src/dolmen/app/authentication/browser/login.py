@@ -56,12 +56,12 @@ class Login(Form):
         data, errors = self.extractData()
         if errors:
             return FAILURE
-        
+
         principal = self.request.principal
         if IUnauthenticatedPrincipal.providedBy(principal):
             self.status = _(u"Login failed")
             return FAILURE
- 
+
         self.flash(_('You are now logged in as ${name}',
                      mapping={"name": principal.id}))
         notify(UserLoginEvent(principal))
