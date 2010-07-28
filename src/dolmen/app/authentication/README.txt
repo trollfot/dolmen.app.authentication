@@ -194,6 +194,19 @@ We can verify our implementation against the interface::
   >>> verifyObject(IPrincipal, stilgar)
   True
 
+We can set up a simple view for our User class::
+
+  >>> from dolmen.app.layout import Index
+
+  >>> class UserView(Index):
+  ...     grok.context(User)
+  ...
+  ...     def render(self):
+  ...         return "<User %s>" % self.context.id
+
+  >>> grok_component('index', UserView)
+  True
+
 The implementation is consistent. We can now persist the principal in
 the plugin container::
 
@@ -464,8 +477,13 @@ user as the context::
         <br />
   ...
 
+  >>> browser.getControl(name='form.field.roles').value = [
+  ...                                'dolmen.Owner', 'dolmen.Member']
+
+  >>> browser.getControl('Update').click()
+
 This view is possible thanks to an adapter, useable on any
-IPrincipals::
+IPrincipals. Let's check if our previous action did its work::
 
   >>> from zope.component.hooks import setSite
   >>> setSite(site) # we got to the context of our site
@@ -473,11 +491,13 @@ IPrincipals::
   >>> from dolmen.app.authentication.browser import roles
   >>> role_controller = roles.IPrincipalRoles(chani)
   >>> role_controller.roles
-  []
+  [u'dolmen.Member', u'dolmen.Owner']
 
-  >>> role_controller.roles = ['dolmen.Member']
+The selected roles are there. We can modify them very easily::
+
+  >>> role_controller.roles = [u'dolmen.Member']
   >>> role_controller.roles
-  ['dolmen.Member']
+  [u'dolmen.Member']
 
 The role management applies the changes on the site object
 itself. Let's verify if the role has been correctly applied::
@@ -485,7 +505,7 @@ itself. Let's verify if the role has been correctly applied::
   >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
   >>> prm = IPrincipalRoleManager(site)
   >>> print prm.getRolesForPrincipal(chani.id)
-  [('dolmen.Member', PermissionSetting: Allow)]
+  [(u'dolmen.Member', PermissionSetting: Allow)]
 
 
 Logging out

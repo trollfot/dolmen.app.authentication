@@ -6,6 +6,10 @@ Changes
 
 - Internationalized the code and added French translation.
 
+- Corrected the role granting UI and exposed it through a contextual tab.
+
+- Improved the tests coverage.
+
 
 1.0a3 (2010-06-25)
 ------------------

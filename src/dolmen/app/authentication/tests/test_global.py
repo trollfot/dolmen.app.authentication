@@ -19,11 +19,13 @@ checker = renormalizing.RENormalizing([
 
 def test_suite():
     suite = unittest.TestSuite()
-    readme = doctest.DocFileSuite(
-        '../README.txt',
-        checker=checker,
-        globs={'getRootFolder': FunctionalLayer.getRootFolder},
-        optionflags=(doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS))
-    readme.layer = FunctionalLayer
-    suite.addTest(readme)
+    files = ('../README.txt',)
+    for filename in files:
+        docfile = doctest.DocFileSuite(
+            filename,
+            checker=checker,
+            globs={'getRootFolder': FunctionalLayer.getRootFolder},
+            optionflags=(doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS))
+        docfile.layer = FunctionalLayer
+        suite.addTest(docfile)
     return suite
