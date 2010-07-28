@@ -19,7 +19,7 @@ def initialize_pau(PAU):
     """Initialize an authentication plugin.
     """
     PAU.authenticatorPlugins = ("globalregistry",)
-    PAU.credentialsPlugins = ("cookies", _("No Challenge if Authenticated"))
+    PAU.credentialsPlugins = ("cookies", "No Challenge if Authenticated")
 
 
 class UserIndexes(grok.Indexes):

@@ -387,7 +387,7 @@ At this point, we can access the management view::
       <label class="field-label"
              for="form-field-activeFolders">Active authentication sources</label>
       ...
-      <input type="checkbox" id="form-field-activeFolders-members" name="form.field.activeFolders" value="members" class="field-tuple" />
+      <input type="checkbox" id="form-field-activeFolders-members" name="form.field.activeFolders" value="members" class="field field-tuple" />
       <label for="form-field-activeFolders-members">members (members)</label>
       <br />
       ...
@@ -450,16 +450,16 @@ user as the context::
     <div class="field">
       <label class="field-label" for="form-field-roles">roles</label>
   ...
-      <input type="checkbox" id="form-field-roles-dolmen-Contributor" name="form.field.roles" value="dolmen.Contributor" class="field-list" />
+      <input type="checkbox" id="form-field-roles-dolmen-Contributor" name="form.field.roles" value="dolmen.Contributor" class="field field-list" />
         <label for="form-field-roles-dolmen-Contributor">dolmen.Contributor</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Member" name="form.field.roles" value="dolmen.Member" class="field-list" />
+       <input type="checkbox" id="form-field-roles-dolmen-Member" name="form.field.roles" value="dolmen.Member" class="field field-list" />
         <label for="form-field-roles-dolmen-Member">dolmen.Member</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Owner" name="form.field.roles" value="dolmen.Owner" class="field-list" />
+       <input type="checkbox" id="form-field-roles-dolmen-Owner" name="form.field.roles" value="dolmen.Owner" class="field field-list" />
         <label for="form-field-roles-dolmen-Owner">dolmen.Owner</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Reviewer" name="form.field.roles" value="dolmen.Reviewer" class="field-list" />
+       <input type="checkbox" id="form-field-roles-dolmen-Reviewer" name="form.field.roles" value="dolmen.Reviewer" class="field field-list" />
         <label for="form-field-roles-dolmen-Reviewer">dolmen.Reviewer</label>
         <br />
   ...

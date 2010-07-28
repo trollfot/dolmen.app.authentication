@@ -23,7 +23,7 @@ def test_suite():
         '../README.txt',
         checker=checker,
         globs={'getRootFolder': FunctionalLayer.getRootFolder},
-        optionflags=(doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS))
+        optionflags=(doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS))
     readme.layer = FunctionalLayer
     suite.addTest(readme)
     return suite

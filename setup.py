@@ -21,7 +21,7 @@ install_requires=[
     'dolmen.menu',
     'setuptools',
     'z3c.schema',
-    'zeam.form.base >= 1.0b3',
+    'zeam.form.base >= 1.0rc1',
     'zope.authentication',
     'zope.component',
     'zope.container',
