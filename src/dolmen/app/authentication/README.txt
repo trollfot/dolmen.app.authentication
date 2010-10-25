@@ -340,9 +340,13 @@ Imagine you go to a page that anonymous users don't have access to::
 
   >>> browser.open("http://localhost/site/@@edit")
   >>> unauthorized = browser.contents
-  >>> 'id="login" name="login"' in unauthorized
+  >>> 'id="login"' in unauthorized
   True
-  >>> 'id="password" name="password"' in unauthorized
+  >>> 'name="login"' in unauthorized
+  True
+  >>> 'id="password"' in unauthorized
+  True
+  >>> 'name="password"' in unauthorized
   True
 
 
@@ -354,9 +358,9 @@ form provided by ``dolmen.app.authentication``::
 
   >>> browser.open('http://localhost/site/@@login')
   >>> loginpage = browser.contents
-  >>> 'id="login" name="login"' in loginpage
+  >>> 'id="login"' in loginpage
   True
-  >>> 'id="password" name="password"' in loginpage
+  >>> 'id="password"' in loginpage
   True
 
   >>> browser.getControl('Username').value = 'mgr'
@@ -400,8 +404,8 @@ At this point, we can access the management view::
       <label class="field-label"
              for="form-field-activeFolders">Active authentication sources</label>
       ...
-      <input type="checkbox" id="form-field-activeFolders-members" name="form.field.activeFolders" value="members" class="field field-tuple" />
-      <label for="form-field-activeFolders-members">members (members)</label>
+      <input type="checkbox" id="form-field-activeFolders-0" name="form.field.activeFolders" value="members" class="field field-tuple field-required" />
+      <label for="form-field-activeFolders-0">members (members)</label>
       <br />
       ...
 
@@ -463,17 +467,17 @@ user as the context::
     <div class="field">
       <label class="field-label" for="form-field-roles">roles</label>
   ...
-      <input type="checkbox" id="form-field-roles-dolmen-Contributor" name="form.field.roles" value="dolmen.Contributor" class="field field-list" />
-        <label for="form-field-roles-dolmen-Contributor">dolmen.Contributor</label>
+      <input type="checkbox" id="form-field-roles-0" name="form.field.roles" value="dolmen.Contributor" class="field field-list field-required" />
+        <label for="form-field-roles-0">dolmen.Contributor</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Member" name="form.field.roles" value="dolmen.Member" class="field field-list" />
-        <label for="form-field-roles-dolmen-Member">dolmen.Member</label>
+       <input type="checkbox" id="form-field-roles-1" name="form.field.roles" value="dolmen.Member" class="field field-list field-required" />
+        <label for="form-field-roles-1">dolmen.Member</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Owner" name="form.field.roles" value="dolmen.Owner" class="field field-list" />
-        <label for="form-field-roles-dolmen-Owner">dolmen.Owner</label>
+       <input type="checkbox" id="form-field-roles-2" name="form.field.roles" value="dolmen.Owner" class="field field-list field-required" />
+        <label for="form-field-roles-2">dolmen.Owner</label>
         <br />
-       <input type="checkbox" id="form-field-roles-dolmen-Reviewer" name="form.field.roles" value="dolmen.Reviewer" class="field field-list" />
-        <label for="form-field-roles-dolmen-Reviewer">dolmen.Reviewer</label>
+       <input type="checkbox" id="form-field-roles-3" name="form.field.roles" value="dolmen.Reviewer" class="field field-list field-required" />
+        <label for="form-field-roles-3">dolmen.Reviewer</label>
         <br />
   ...
 
