@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.0b2 (unreleased)
+------------------
+
+- Change in IChangePassword. Password can be a plain str or a unicode value
+  now (via IProtected). IChangePassword then provides the schema for the form.
+  See corresponding change in dolmen.authentication.
+
+
 1.0b1 (2010-07-28)
 ------------------
 

@@ -18,6 +18,12 @@ class IChangePassword(IPasswordProtected):
     """This interface defines a convenient way to change a password,
     including a double check.
     """
+    password = schema.Password(
+        title=_(u"Password"),
+        description=_(u"Enter a password"),
+        required=True,
+        )
+    
     verify_pass = schema.Password(
         title=_(u"Password checking"),
         description=_(u"Retype the password."),
