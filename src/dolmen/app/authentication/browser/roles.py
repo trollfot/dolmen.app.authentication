@@ -4,9 +4,11 @@ import grok
 
 from zope import schema
 from zope.interface import Interface
+from zope.component import queryUtility
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.settings import Allow
 from zope.securitypolicy.vocabulary import RoleIdsVocabulary
+from zope.schema.interfaces import IVocabularyFactory
 from zope.site.hooks import getSite
 
 from dolmen import menu
@@ -22,7 +24,10 @@ from zope.schema.interfaces import IContextSourceBinder
 
 @provider(IContextSourceBinder)
 def roles_source(context):
-    return RoleIdsVocabulary(context)
+    roles = queryUtility(IVocabularyFactory, name=u'Role Ids')
+    if roles is None:
+        return RoleIdsVocabulary(context)
+    return roles(context)
 
 
 class IPrincipalRoles(Interface):
