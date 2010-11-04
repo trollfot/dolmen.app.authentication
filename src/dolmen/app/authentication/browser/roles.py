@@ -6,6 +6,7 @@ from zope import schema
 from zope.interface import Interface
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.settings import Allow
+from zope.securitypolicy.vocabulary import RoleIdsVocabulary
 from zope.site.hooks import getSite
 
 from dolmen import menu
@@ -14,14 +15,21 @@ from dolmen.app.authentication import IPrincipal
 from dolmen.app.authentication import permissions
 from dolmen.app.authentication import MF as _
 from dolmen.forms.base import Fields
+from grokcore.component import provider
 from zeam.form.base.datamanager import makeAdaptiveDataManager
+from zope.schema.interfaces import IContextSourceBinder
+
+
+@provider(IContextSourceBinder)
+def roles_source(context):
+    return RoleIdsVocabulary(context)
 
 
 class IPrincipalRoles(Interface):
     """Defines a component allowing you to chose roles.
     """
     roles = schema.List(
-        value_type=schema.Choice(vocabulary='Role Ids'),
+        value_type=schema.Choice(source=roles_source),
         required=True)
 
 

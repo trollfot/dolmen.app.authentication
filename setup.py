@@ -21,7 +21,7 @@ install_requires=[
     'dolmen.menu',
     'setuptools',
     'z3c.schema',
-    'zeam.form.base >= 1.0rc2',
+    'zeam.form.base >= 1.0',
     'zope.authentication',
     'zope.component',
     'zope.container',
@@ -30,7 +30,7 @@ install_requires=[
     'zope.i18nmessageid',
     'zope.interface',
     'zope.location',
-    'zope.pluggableauth',
+    'zope.pluggableauth >= 1.1',
     'zope.principalregistry',
     'zope.publisher',
     'zope.schema',
@@ -41,12 +41,15 @@ install_requires=[
     ]
 
 test_requires = [
+    'zope.error',
     'zope.app.appsetup',
     'zope.app.publication',
     'zope.app.wsgi >= 3.9.2',
     'zope.browserpage',
     'zope.i18n',
     'zope.testing',
+    'zope.app.exception',
+    'zope.dublincore',
     ]
 
 setup(name = name,

@@ -99,7 +99,7 @@ the global registry. We'll test the look up using "mgr" credentials::
   >>> user = plugin.authenticateCredentials(
   ...            {'login': "mgr", "password": "mgrpw"})
   >>> print user
-  PrincipalInfo(u'zope.mgr')
+  <GlobalRegistryPrincipal "zope.mgr">
 
 Wrong credentials will make the authentication return None::
 
@@ -113,18 +113,13 @@ Wrong credentials will make the authentication return None::
    >>> user is None
    True
 
-It is possible to get the principal info alone, as required by the
-IAuthenticatorPlugin interface::
+It is not possible to get the principal info alone::
 
    >>> print plugin.principalInfo('zope.mgr')
-   PrincipalInfo(u'zope.mgr')
+   None
 
    >>> print plugin.principalInfo('zorglub')
    None
-
-Note that the principal info is retrieved using its id and not its
-login. The id is unique and prefixed by the registry's own prefix, to
-make it easily identifiable and retrievable.
 
 
 Principal Folder Authentication
@@ -459,6 +454,7 @@ Managing the users
 Users can be granted roles. This can be done through a view, with the
 user as the context::
 
+  >>> browser.handleErrors = False
   >>> browser.open("http://localhost/site/auth/members/chani/@@grant_roles")
   >>> print browser.contents
   <!DOCTYPE html PUBLIC...
@@ -484,7 +480,9 @@ user as the context::
   >>> browser.getControl(name='form.field.roles').value = [
   ...                                'dolmen.Owner', 'dolmen.Member']
 
+  >>> browser.handleErrors = False
   >>> browser.getControl('Update').click()
+
 
 This view is possible thanks to an adapter, useable on any
 IPrincipals. Let's check if our previous action did its work::

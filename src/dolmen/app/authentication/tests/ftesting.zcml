@@ -9,13 +9,17 @@
 
   <include package="grok" />
   <include package="zope.container" />
+  <include package="zope.dublincore" />
   <include package="zope.pluggableauth" />
   <include package="zope.principalregistry" />
   <include package="zope.publisher" />
   <include package="zope.site" />
+  <include package="zope.i18n" />
   <include package="zope.app.wsgi" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
+  <include package="zope.error" />
+  <include package="zope.app.exception.browser" />
 
   <include package="dolmen.app.site" />
   <include package="dolmen.app.authentication" />
@@ -52,7 +56,7 @@
 
   <grant
       permission="zope.View"
-      principal="zope.anybody"
+      principal="zope.Anybody"
       />
 
   <grant
