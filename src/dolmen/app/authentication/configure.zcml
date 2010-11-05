@@ -11,6 +11,7 @@
   <include package="dolmen.menu" />
   <include package="dolmen.content" />
   <include package="zope.pluggableauth" />
+  <include package="zope.pluggableauth.plugins" file="groupfolder.zcml" />
   <include package="zope.securitypolicy" />
 
   <browser:defaultView

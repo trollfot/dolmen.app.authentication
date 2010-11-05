@@ -1,10 +1,41 @@
 # -*- coding: utf-8 -*-
 
 import grokcore.component as grok
-from zope.pluggableauth.factories import PrincipalInfo
-from zope.pluggableauth.interfaces import IAuthenticatorPlugin
-from zope.authentication.interfaces import PrincipalLookupError
+from zope.publisher.interfaces import IRequest
+from zope.pluggableauth.interfaces import (
+    IPrincipalInfo, IAuthenticatedPrincipalFactory, IAuthenticatorPlugin)
 from zope.principalregistry.principalregistry import principalRegistry
+
+
+class IPrincipalFromGlobalRegistry(IPrincipalInfo):
+    pass
+
+
+class PrincipalRegistryInfo(object):
+    grok.implements(IPrincipalFromGlobalRegistry)
+
+    credentialsPlugin = None
+    authenticatorPlugin = None
+
+    def __repr__(self):
+        return '<GlobalRegistryPrincipal "%s">' % self.id
+
+    def __init__(self, principal):
+        self.id = unicode(principal.id)
+        self.title = principal.title
+        self.description = principal.description
+        self.principal = principal
+
+
+class PrincipalRegistryFactory(grok.MultiAdapter):
+    grok.adapts(IPrincipalFromGlobalRegistry, IRequest)
+    grok.provides(IAuthenticatedPrincipalFactory)
+
+    def __init__(self, info, request):
+        self.info = info
+
+    def __call__(self, authentication):
+        return self.info.principal
 
 
 class GlobalRegistryAuth(grok.GlobalUtility):
@@ -34,20 +65,8 @@ class GlobalRegistryAuth(grok.GlobalUtility):
         except KeyError:
             return
         if principal and principal.validate(password):
-            return PrincipalInfo(unicode(principal.id),
-                                 principal.getLogin(),
-                                 principal.title,
-                                 principal.description)
+            return PrincipalRegistryInfo(principal)
         return
 
     def principalInfo(self, id):
-        try:
-            principal = principalRegistry.getPrincipal(id)
-            if principal is not None:
-                return PrincipalInfo(unicode(principal.id),
-                                     principal.getLogin(),
-                                     principal.title,
-                                     principal.description)
-        except PrincipalLookupError:
-            pass
         return None
