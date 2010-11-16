@@ -1,12 +1,17 @@
 Changes
 =======
 
-1.0b2 (unreleased)
+1.0b2 (2010-11-16)
 ------------------
 
 - Change in IChangePassword. Password can be a plain str or a unicode value
   now (via IProtected). IChangePassword then provides the schema for the form.
   See corresponding change in dolmen.authentication.
+
+- The GlobalRegistry plugin has been fixed. It will no longer trigger
+  the AuthenticatedPrincipalCreated event. This solves an important
+  bug : the event's handlers used to consider all principals from the
+  GlobalRegistry to be authenticated, even the unauthenticated ones.
 
 
 1.0b1 (2010-07-28)
