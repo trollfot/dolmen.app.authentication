@@ -8,25 +8,37 @@ from dolmen.app.authentication import ManageUsers, MF as _
 from dolmen.app.layout import Index, Page, ContextualMenu, Edit
 from dolmen.authentication import IPrincipalFolder
 from dolmen.forms.base import Fields
+from grokcore.component import provider
 from zeam.form.base.datamanager import makeAdaptiveDataManager
 
 from zope.authentication.interfaces import IAuthentication
-from zope.interface import Interface
+from zope.interface import Interface, classProvides
 from zope.schema import Tuple, Choice
+from zope.component import queryUtility
+from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.interfaces import IVocabularyFactory, ISource
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 
-class PrincipalFoldersList(grok.GlobalUtility):
-    grok.name('dolmen.PAUPrincipalFolders')
-    grok.implements(ISource, IVocabularyFactory)
-    grok.provides(IVocabularyFactory)
+class PrincipalFoldersList(SimpleVocabulary):
+    classProvides(IVocabularyFactory)
 
-    def __call__(self, pau):
-        return SimpleVocabulary(
-            [SimpleTerm(value=p.__name__, token=p.__name__,
-                        title="%s (%s)" % (p.__name__, p.title or p.__name__))
-             for p in pau.values() if IPrincipalFolder.providedBy(p)])
+    def __init__(self, pau):
+        terms = [SimpleTerm(
+            value=p.__name__, token=p.__name__,
+            title="%s (%s)" % (p.__name__, p.title or p.__name__))
+                 for p in pau.values() if IPrincipalFolder.providedBy(p)]
+        super(PrincipalFoldersList, self).__init__(terms)
+
+
+@provider(IContextSourceBinder)
+def folders_source(context):
+    # Provides some pluggability. Do we need this ?
+    folders = queryUtility(
+        IVocabularyFactory, name=u'PrincipalFolders')
+    if folders is None:
+        return PrincipalFoldersList(context)
+    return folders(context)
 
 
 class IActiveFolders(Interface):
@@ -34,7 +46,7 @@ class IActiveFolders(Interface):
     """
     activeFolders = Tuple(
         title=_(u"Active authentication sources"),
-        value_type=Choice(vocabulary='dolmen.PAUPrincipalFolders'),
+        value_type=Choice(source=folders_source),
         default=tuple())
 
 
