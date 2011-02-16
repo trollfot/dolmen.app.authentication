@@ -365,10 +365,6 @@ form provided by ``dolmen.app.authentication``::
   >>> browser.url
   'http://localhost/site'
 
-  >>> browser.open("http://localhost/site/@@edit")
-  >>> "<h1>Edit: My Dolmen Site</h1>\n" in browser.contents
-  True
-
 
 Managing the authentication plugins
 ====================================

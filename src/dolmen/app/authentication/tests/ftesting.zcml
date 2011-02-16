@@ -18,9 +18,6 @@
   <include package="zope.app.wsgi" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
-  <include package="zope.error" />
-  <include package="zope.app.exception.browser" />
-
   <include package="dolmen.app.site" />
   <include package="dolmen.app.authentication" />
 

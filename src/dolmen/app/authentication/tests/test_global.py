@@ -24,7 +24,9 @@ def test_suite():
         docfile = doctest.DocFileSuite(
             filename,
             checker=checker,
-            globs={'getRootFolder': FunctionalLayer.getRootFolder},
+            globs={
+                'getRootFolder': FunctionalLayer.getRootFolder,
+                '__name__': 'dolmen.app.authentication.tests'},
             optionflags=(doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS))
         docfile.layer = FunctionalLayer
         suite.addTest(docfile)
