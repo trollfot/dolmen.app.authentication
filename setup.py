@@ -9,6 +9,7 @@ history = open(
     join('docs', 'HISTORY.txt')).read().replace(name + ' - ', '')
 
 install_requires=[
+    'dolmen.app.content',
     'dolmen.app.layout',
     'dolmen.app.security',
     'dolmen.app.site',

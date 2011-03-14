@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.0b4 (unreleased)
+------------------
+
+- PrincipalFolderPlugin requires a title.
+
+
 1.0b3 (2010-11-18)
 ------------------
 
