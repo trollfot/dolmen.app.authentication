@@ -33,7 +33,7 @@ def roles_source(context):
 class IPrincipalRoles(Interface):
     """Defines a component allowing you to chose roles.
     """
-    roles = schema.List(
+    roles = schema.Set(
         value_type=schema.Choice(source=roles_source),
         required=True)
 
@@ -53,11 +53,11 @@ class PrincipalRoles(grok.Adapter):
     def roles():
         """Writable property for roles.
         """
-        def get(self):
+        def getter(self):
             setting = self.manager.getRolesForPrincipal(self.userid)
-            return [role[0] for role in setting if role[1] is Allow]
+            return set([role[0] for role in setting if role[1] is Allow])
 
-        def set(self, roles):
+        def setter(self, roles):
             # removing undefined roles
             setting = self.manager.getRolesForPrincipal(self.userid)
             for role in setting:
@@ -68,7 +68,7 @@ class PrincipalRoles(grok.Adapter):
             for role in roles:
                 self.manager.assignRoleToPrincipal(role, self.userid)
 
-        return property(get, set)
+        return property(getter, setter)
 
 
 @menu.menuentry(layout.ContextualMenu, order=20)
