@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import grokcore.component as grok
-from dolmen.app.content.interfaces import IDescriptiveSchema
+from zope.dublincore.interfaces import IDCDescriptiveProperties
 from dolmen.content import Container
 from dolmen.content import schema
 from dolmen.authentication import (
@@ -11,7 +11,7 @@ from zope.pluggableauth.interfaces import IAuthenticatorPlugin, IPrincipalInfo
 
 class PrincipalFolderPlugin(Container):
     grok.baseclass()
-    schema(IDescriptiveSchema)
+    schema(IDCDescriptiveProperties)
     grok.implements(IAuthenticatorPlugin, IPrincipalFolder)
 
     def getPrincipal(self, id):
