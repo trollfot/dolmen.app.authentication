@@ -49,12 +49,12 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
         cookie = request.get(self.cookie_name, None)
 
         if login and password:
-            val = base64.encodestring('%s:%s' % (login, password))
+            val = base64.encodestring(('%s:%s' % (login, password)).encode('utf-8'))
             request.response.setCookie(self.cookie_name,
                                        urllib.quote(val),
                                        path='/')
         elif cookie:
-            val = base64.decodestring(urllib.unquote(cookie))
+            val = base64.decodestring(urllib.unquote(cookie.decode('utf-8')))
             login, password = val.split(':')
         else:
             return
