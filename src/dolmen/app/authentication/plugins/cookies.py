@@ -54,7 +54,7 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
                                        urllib.quote(val),
                                        path='/')
         elif cookie:
-            val = base64.decodestring(urllib.unquote(cookie.decode('utf-8')))
+            val = base64.decodestring(urllib.unquote(cookie)).decode('utf-8')
             login, password = val.split(':')
         else:
             return
