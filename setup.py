@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from os.path import join
 
 name = 'dolmen.app.authentication'
-version = '1.0dev'
+version = '1.0b4'
 readme = open(
     join('src', 'dolmen', 'app', 'authentication', 'README.txt')).read()
 history = open(
