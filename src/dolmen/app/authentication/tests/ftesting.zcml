@@ -18,7 +18,10 @@
   <include package="zope.app.wsgi" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
+
   <include package="dolmen.app.site" />
+  <include package="dolmen.app.layout" />
+  <include package="dolmen.forms.crud" />
   <include package="dolmen.app.authentication" />
 
   <browser:defaultView name="index" />

@@ -61,7 +61,7 @@ need to proceed to the authentication::
   True
 
   >>> print plugin.extractCredentials(request)
-  {'login': 'mgr', 'password': 'mgrpw'}
+  {'login': u'mgr', 'password': u'mgrpw'}
 
 
 Authenticator Plugins
@@ -97,19 +97,19 @@ In order to test this plugin, we registered a user, called "mgr" in
 the global registry. We'll test the look up using "mgr" credentials::
 
   >>> user = plugin.authenticateCredentials(
-  ...            {'login': "mgr", "password": "mgrpw"})
+  ...            {'login': u"mgr", "password": u"mgrpw"})
   >>> print user
   <GlobalRegistryPrincipal "zope.mgr">
 
 Wrong credentials will make the authentication return None::
 
    >>> user = plugin.authenticateCredentials(
-   ...            {'login': "mgr", "password": "wrongpass"})
+   ...            {'login': u"mgr", "password": u"wrongpass"})
    >>> user is None
    True
 
    >>> user = plugin.authenticateCredentials(
-   ...            {'login': "anon", "password": "wrongpass"})
+   ...            {'login': u"anon", "password": u"wrongpass"})
    >>> user is None
    True
 
@@ -321,6 +321,16 @@ package in the context of a real Dolmen site::
   >>> lsm = site.getSiteManager()
   >>> lsm.registerUtility(PAU, IAuthentication)
 
+  >>> from dolmen.app.layout import Master
+  >>> class Layout(Master):
+  ...     grok.name('')
+  ...
+  ...     def __call__(self, view):
+  ...         return u"<!DOCTYPE html>\n" + unicode(view.render())
+
+  >>> grok_component('layout', Layout)
+  True
+
 
 Logging in
 ==========
@@ -332,17 +342,12 @@ Imagine you go to a page that anonymous users don't have access to::
 
   >>> from zope.app.wsgi.testlayer import Browser
   >>> browser = Browser()
+  >>> browser.handleErrors = False
 
   >>> browser.open("http://localhost/site/@@edit")
-  >>> unauthorized = browser.contents
-  >>> 'id="login"' in unauthorized
-  True
-  >>> 'name="login"' in unauthorized
-  True
-  >>> 'id="password"' in unauthorized
-  True
-  >>> 'name="password"' in unauthorized
-  True
+  Traceback (most recent call last):
+  ...	    	  
+  Unauthorized: ...
 
 
 The login page
@@ -389,16 +394,11 @@ At this point, we can access the management view::
 
   >>> browser.open("http://localhost/site/auth/@@authenticators")
   >>> print browser.contents
-  <!DOCTYPE html PUBLIC...
-  <div class="fields">
-    <div class="field">
-      <label class="field-label"
-             for="form-field-activeFolders">Active authentication sources</label>
-      ...
-      <input type="checkbox" id="form-field-activeFolders-0" name="form.field.activeFolders" value="members" class="field field-tuple field-required" />
-      <label for="form-field-activeFolders-0">members (members)</label>
-      <br />
-      ...
+  <!DOCTYPE html>
+  <form action="http://localhost/site/auth/@@authenticators" method="post"
+        enctype="multipart/form-data">
+    <h1>Edit the authentication sources</h1>
+    ...
 
 The "members" principal folder is not yet activated.
 
@@ -452,27 +452,6 @@ user as the context::
 
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/site/auth/members/chani/@@grant_roles")
-  >>> print browser.contents
-  <!DOCTYPE html PUBLIC...
-  ...<h1>Edit: Sihaya</h1>...
-  <div class="fields">
-    <div class="field">
-      <label class="field-label" for="form-field-roles">roles</label>
-  ...
-      <input type="checkbox" id="form-field-roles-0" name="form.field.roles" value="dolmen.Contributor" class="field field-list field-required" />
-        <label for="form-field-roles-0">dolmen.Contributor</label>
-        <br />
-       <input type="checkbox" id="form-field-roles-1" name="form.field.roles" value="dolmen.Member" class="field field-list field-required" />
-        <label for="form-field-roles-1">dolmen.Member</label>
-        <br />
-       <input type="checkbox" id="form-field-roles-2" name="form.field.roles" value="dolmen.Owner" class="field field-list field-required" />
-        <label for="form-field-roles-2">dolmen.Owner</label>
-        <br />
-       <input type="checkbox" id="form-field-roles-3" name="form.field.roles" value="dolmen.Reviewer" class="field field-list field-required" />
-        <label for="form-field-roles-3">dolmen.Reviewer</label>
-        <br />
-  ...
-
   >>> browser.getControl(name='form.field.roles').value = [
   ...                                'dolmen.Owner', 'dolmen.Member']
 
@@ -489,13 +468,13 @@ IPrincipals. Let's check if our previous action did its work::
   >>> from dolmen.app.authentication.browser import roles
   >>> role_controller = roles.IPrincipalRoles(chani)
   >>> role_controller.roles
-  [u'dolmen.Member', u'dolmen.Owner']
+  set([u'dolmen.Member', u'dolmen.Owner'])
 
 The selected roles are there. We can modify them very easily::
 
   >>> role_controller.roles = [u'dolmen.Member']
   >>> role_controller.roles
-  [u'dolmen.Member']
+  set([u'dolmen.Member'])
 
 The role management applies the changes on the site object
 itself. Let's verify if the role has been correctly applied::

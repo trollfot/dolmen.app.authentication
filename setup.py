@@ -49,7 +49,6 @@ test_requires = [
     'zope.browserpage',
     'zope.i18n',
     'zope.testing',
-    'zope.app.exception',
     'zope.dublincore',
     ]
 
