@@ -1,10 +1,12 @@
 Changes
 =======
 
-1.0b4 (unreleased)
+1.0b4 (2013-10-31)
 ------------------
 
 - PrincipalFolderPlugin requires a title.
+
+- Corrected the decoding of the cookie value.
 
 
 1.0b3 (2010-11-18)
