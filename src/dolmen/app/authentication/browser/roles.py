@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import grok
-
-from dolmen import menu
-from dolmen.app import layout
+from dolmen.forms import crud
 from dolmen.app.authentication import IPrincipal
 from dolmen.app.authentication import permissions
 from dolmen.app.authentication import MF as _
@@ -71,8 +69,7 @@ class PrincipalRoles(grok.Adapter):
         return property(getter, setter)
 
 
-@menu.menuentry(layout.ContextualMenu, order=20)
-class EditPrincipalRoles(layout.Edit):
+class EditPrincipalRoles(crud.Edit):
     grok.context(IPrincipal)
     grok.name('grant_roles')
     grok.title(_(u"Grant roles"))

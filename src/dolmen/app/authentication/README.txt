@@ -191,9 +191,10 @@ We can verify our implementation against the interface::
 
 We can set up a simple view for our User class::
 
-  >>> from dolmen.app.layout import Index
+  >>> from grokcore.layout import Page
 
-  >>> class UserView(Index):
+  >>> class UserView(Page):
+  ...     grok.name('index')
   ...     grok.context(User)
   ...
   ...     def render(self):
@@ -321,14 +322,38 @@ package in the context of a real Dolmen site::
   >>> lsm = site.getSiteManager()
   >>> lsm.registerUtility(PAU, IAuthentication)
 
-  >>> from dolmen.app.layout import Master
-  >>> class Layout(Master):
+  >>> from grokcore.layout import Layout
+  >>> from zope.interface import Interface
+
+  >>> class Layout(Layout):
   ...     grok.name('')
+  ...     grok.context(Interface)
+  ...
+  ...     def render(self):
+  ...         return u''
   ...
   ...     def __call__(self, view):
   ...         return u"<!DOCTYPE html>\n" + unicode(view.render())
 
   >>> grok_component('layout', Layout)
+  True
+
+  >>> from dolmen.forms import crud
+  >>> class Edit(crud.Edit):
+  ...     grok.context(Dolmen)
+  ...     grok.require('test.Edit')
+
+  >>> grok_component('editsite', Edit)
+  True
+
+  >>> class DolmenIndex(Page):
+  ...     grok.name('index')
+  ...     grok.context(Dolmen)
+  ...
+  ...     def render(self):
+  ...         return "Homepage"
+
+  >>> grok_component('indexsite', DolmenIndex)
   True
 
 
@@ -444,6 +469,19 @@ The principal folder is now activated. Let's retry to log in::
   http://localhost/site
 
 
+Creating roles
+==============
+
+  >>> class Editor(grok.Role):
+  ...     grok.name('testEditor')
+  ...     grok.title(u"Editor")
+  ...     grok.description(u"A basic editor.")
+  ...     grok.permissions('test.Edit')
+
+  >>> grok_component('editor', Editor)
+  True
+
+
 Managing the users
 ==================
 
@@ -452,8 +490,7 @@ user as the context::
 
   >>> browser.handleErrors = False
   >>> browser.open("http://localhost/site/auth/members/chani/@@grant_roles")
-  >>> browser.getControl(name='form.field.roles').value = [
-  ...                                'dolmen.Owner', 'dolmen.Member']
+  >>> browser.getControl(name='form.field.roles').value = ['testEditor']
 
   >>> browser.handleErrors = False
   >>> browser.getControl('Update').click()
@@ -468,13 +505,13 @@ IPrincipals. Let's check if our previous action did its work::
   >>> from dolmen.app.authentication.browser import roles
   >>> role_controller = roles.IPrincipalRoles(chani)
   >>> role_controller.roles
-  set([u'dolmen.Member', u'dolmen.Owner'])
+  set([u'testEditor'])
 
 The selected roles are there. We can modify them very easily::
 
-  >>> role_controller.roles = [u'dolmen.Member']
+  >>> role_controller.roles = [u'testEditor']
   >>> role_controller.roles
-  set([u'dolmen.Member'])
+  set([u'testEditor'])
 
 The role management applies the changes on the site object
 itself. Let's verify if the role has been correctly applied::
@@ -482,7 +519,7 @@ itself. Let's verify if the role has been correctly applied::
   >>> from zope.securitypolicy.interfaces import IPrincipalRoleManager
   >>> prm = IPrincipalRoleManager(site)
   >>> print prm.getRolesForPrincipal(chani.id)
-  [(u'dolmen.Member', PermissionSetting: Allow)]
+  [(u'testEditor', PermissionSetting: Allow)]
 
 
 Logging out

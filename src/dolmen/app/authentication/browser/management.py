@@ -3,14 +3,14 @@
 
 import grok
 
-from dolmen import menu
+from dolmen.forms import crud
 from dolmen.app.authentication import ManageUsers, MF as _
-from dolmen.app.layout import Index, Page, ContextualMenu, Edit
 from dolmen.authentication import IPrincipalFolder
 from dolmen.forms.base import Fields
 from grokcore.component import provider
-from zeam.form.base.datamanager import makeAdaptiveDataManager
+from grokcore.layout import Page
 
+from zeam.form.base.datamanager import makeAdaptiveDataManager
 from zope.authentication.interfaces import IAuthentication
 from zope.interface import Interface, classProvides
 from zope.schema import Tuple, Choice
@@ -76,13 +76,12 @@ class ActiveFoldersChoice(grok.Adapter):
         return property(fget, fset)
 
 
-@menu.menuentry(ContextualMenu, order=10)
-class ManageAuth(Index):
+class ManageAuth(Page):
+    grok.name('index')
     grok.context(IAuthentication)
     grok.require(ManageUsers)
 
 
-@menu.menuentry(ContextualMenu, order=15)
 class AuthSources(Page):
     grok.title(_("Authentication sources"))
     grok.context(IAuthentication)
@@ -93,8 +92,7 @@ class AuthSources(Page):
         self.credentials = self.context.credentialsPlugins
 
 
-@menu.menuentry(ContextualMenu, order=20)
-class PAUPreferences(Edit):
+class PAUPreferences(crud.Edit):
     grok.name('authenticators')
     grok.context(IAuthentication)
     grok.require(ManageUsers)

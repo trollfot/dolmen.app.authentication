@@ -10,11 +10,7 @@
   <include package="zope.securitypolicy" />
   <include package="zope.pluggableauth" />
   <include package="zope.pluggableauth.plugins" file="groupfolder.zcml" />
-
-  <include package="dolmen.app.layout" />
   <include package="dolmen.authentication" />
-  <include package="dolmen.menu" />
-  <include package="dolmen.content" />
 
   <grok:grok package="." />
 

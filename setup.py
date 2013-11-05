@@ -2,32 +2,31 @@ from setuptools import setup, find_packages
 from os.path import join
 
 name = 'dolmen.app.authentication'
-version = '1.0b4'
+version = '1.1-dev'
 readme = open(
     join('src', 'dolmen', 'app', 'authentication', 'README.txt')).read()
 history = open(
     join('docs', 'HISTORY.txt')).read().replace(name + ' - ', '')
 
+
 install_requires=[
-    'dolmen.app.content',
-    'dolmen.app.layout',
-    'dolmen.app.security',
-    'dolmen.app.site',
     'dolmen.authentication >= 0.2',
-    'dolmen.content',
     'dolmen.forms.base',
+    'dolmen.forms.crud',
     'grok',
     'grokcore.component',
+    'grokcore.content',
+    'grokcore.layout',
     'grokcore.view',
-    'dolmen.menu',
     'setuptools',
     'z3c.schema',
-    'zeam.form.base >= 1.0',
+    'zeam.form.base',
     'zope.authentication',
     'zope.component',
     'zope.container',
     'zope.event',
     'zope.formlib',
+    'zope.i18n',
     'zope.i18nmessageid',
     'zope.interface',
     'zope.location',
@@ -42,7 +41,7 @@ install_requires=[
     ]
 
 test_requires = [
-    'zope.error',
+    'dolmen.app.site',
     'zope.app.appsetup',
     'zope.app.publication',
     'zope.app.wsgi >= 3.9.2',

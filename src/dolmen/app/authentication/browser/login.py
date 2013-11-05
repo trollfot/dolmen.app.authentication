@@ -5,19 +5,17 @@ import zope.schema
 import zope.interface
 import grokcore.view as grok
 
-from zeam.form.base import action
-from zeam.form.base.markers import SUCCESS, FAILURE
 from zope.event import notify
 from zope.traversing.browser.absoluteurl import absoluteURL
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 from zope.location.interfaces import ILocation
 
-from dolmen import menu
-from dolmen.app.layout import Form
+from zeam.form.base import action
+from zeam.form.base.markers import SUCCESS, FAILURE
+from dolmen.forms import crud
 from dolmen.forms.base import Fields
 from dolmen.authentication import UserLoginEvent
 from dolmen.app.authentication import MF as _
-from dolmen.app.authentication.browser import AnonymousActionsMenu
 
 
 class ILoginForm(zope.interface.Interface):
@@ -32,8 +30,7 @@ class ILoginForm(zope.interface.Interface):
         required=True)
 
 
-@menu.menuentry(AnonymousActionsMenu)
-class Login(Form):
+class Login(crud.ApplicationForm):
     """A very basic implementation of a login form.
     """
     grok.title(_(u"Log in"))

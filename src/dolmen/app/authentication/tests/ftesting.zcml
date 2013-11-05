@@ -19,8 +19,6 @@
   <include package="zope.app.appsetup" />
   <include package="zope.app.publication" />
 
-  <include package="dolmen.app.site" />
-  <include package="dolmen.app.layout" />
   <include package="dolmen.forms.crud" />
   <include package="dolmen.app.authentication" />
 
@@ -32,6 +30,11 @@
       />
 
   <!-- Security -->
+  <permission 
+       id="test.Edit"
+       title="permission to edit something in the test"
+       />
+
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
@@ -60,8 +63,13 @@
       />
 
   <grant
-      permission="dolmen.content.View"
+      permission="zope.View"
       principal="zope.Everybody"
+      />
+
+  <grant
+      permission="test.Edit"
+      principal="zope.Authenticated"
       />
 
   <principal
