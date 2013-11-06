@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.1 (2013-11-06)
+----------------
+
+- Removed all dolmen.app dependencies in order to free the package
+  from useless ties. This is acheived by removing the integration of
+  the menu entries and base schemas.
+
+
 1.0b4 (2013-10-31)
 ------------------
 

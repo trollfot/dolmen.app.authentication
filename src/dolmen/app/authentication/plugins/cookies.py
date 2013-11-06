@@ -40,6 +40,12 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
     challengeProtocol = None
     cookie_name = 'dolmen.authcookie'
 
+    @staticmethod
+    def make_cookie(login, password):
+        credstr = u'%s:%s' % (login, password)
+        val = base64.encodestring(credstr).encode('utf-8')
+        return urllib.quote(val)
+
     def extractCredentials(self, request):
         if not IHTTPRequest.providedBy(request):
             return
@@ -49,10 +55,8 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
         cookie = request.get(self.cookie_name, None)
 
         if login and password:
-            val = base64.encodestring(('%s:%s' % (login, password)).encode('utf-8'))
-            request.response.setCookie(self.cookie_name,
-                                       urllib.quote(val),
-                                       path='/')
+            cookie = self.make_cookie(login, password)
+            request.response.setCookie(self.cookie_name, cookie, path='/')
         elif cookie:
             val = base64.decodestring(urllib.unquote(cookie)).decode('utf-8')
             login, password = val.split(':')
