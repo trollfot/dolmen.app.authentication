@@ -43,7 +43,7 @@ class CookiesCredentials(grok.GlobalUtility, SessionCredentialsPlugin):
     @staticmethod
     def make_cookie(login, password):
         credstr = u'%s:%s' % (login, password)
-        val = base64.encodestring(credstr).encode('utf-8')
+        val = base64.encodestring(credstr.encode('utf-8'))
         return urllib.quote(val)
 
     def extractCredentials(self, request):
